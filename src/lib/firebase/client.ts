@@ -1,10 +1,10 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { connectFirestoreEmulator, getFirestore, type Firestore } from "firebase/firestore";
+import { connectStorageEmulator, getStorage, type FirebaseStorage } from "firebase/storage";
 import firebaseJson from "../../../firebase.json";
 
 export const useEmulators = process.env.NEXT_PUBLIC_USE_EMULATORS === "1";
 export const emulatorHost = process.env.NEXT_PUBLIC_EMULATOR_HOST || "127.0.0.1";
-const firestoreEmulator = firebaseJson.emulators.firestore;
 
 export function firebaseApp(): FirebaseApp {
   if (getApps().length > 0) return getApp();
@@ -23,7 +23,17 @@ let db: Firestore | undefined;
 export function getDb(): Firestore {
   if (!db) {
     db = getFirestore(firebaseApp());
-    if (useEmulators) connectFirestoreEmulator(db, emulatorHost, firestoreEmulator.port);
+    if (useEmulators) connectFirestoreEmulator(db, emulatorHost, firebaseJson.emulators.firestore.port);
   }
   return db;
+}
+
+let storage: FirebaseStorage | undefined;
+
+export function getStorageClient(): FirebaseStorage {
+  if (!storage) {
+    storage = getStorage(firebaseApp());
+    if (useEmulators) connectStorageEmulator(storage, emulatorHost, firebaseJson.emulators.storage.port);
+  }
+  return storage;
 }

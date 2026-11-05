@@ -40,6 +40,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -78,9 +79,12 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
     }
     setErrors({});
     setSaving(true);
+    setSaveFailed(false);
     try {
       await addProduct(result.value, image ?? undefined);
       onClose();
+    } catch {
+      setSaveFailed(true);
     } finally {
       setSaving(false);
     }
@@ -240,6 +244,12 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
             </label>
           </div>
         </div>
+
+        {saveFailed && (
+          <p role="alert" className="rounded-[14px] bg-accent-soft px-4 py-3 text-[15px] font-semibold text-accent-deep">
+            บันทึกสินค้าไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองอีกครั้ง
+          </p>
+        )}
 
         <div className="mt-1 grid grid-cols-[1fr_2fr] gap-3">
           <button

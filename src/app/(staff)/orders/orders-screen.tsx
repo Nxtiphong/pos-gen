@@ -2,12 +2,13 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { formatBaht } from "@/domain/money";
-import { itemsSummary, ordersForTab, queueTabs, type QueueOrder, type QueueStatus } from "@/domain/queue";
+import type { Order, OrderStatus } from "@/domain/order";
+import { itemsSummary, ordersForTab, queueTabs } from "@/domain/queue";
 import { useOrderQueue } from "@/lib/order-queue";
 import { formatClock } from "@/lib/thai-date";
 import { StaffNav } from "@/components/staff-nav";
 
-const TABS: { status: QueueStatus; label: string }[] = [
+const TABS: { status: OrderStatus; label: string }[] = [
   { status: "preparing", label: "กำลังทำ" },
   { status: "notified", label: "แจ้งแล้ว" },
   { status: "picked_up", label: "รับแล้ว" },
@@ -15,11 +16,17 @@ const TABS: { status: QueueStatus; label: string }[] = [
 
 const TOAST_MS = 4000;
 
-type Toast = { orderId: string; orderNo: string; seq: number };
+type Toast = { orderId: string; text: string; seq: number };
+
+function notifyToast(order: Order): string {
+  return order.scannedAt
+    ? `ส่งแจ้งเตือนไปที่มือถือลูกค้า ${order.orderNo} แล้ว`
+    : `ลูกค้ายังไม่สแกนบิล · เรียก ${order.orderNo} ด้วยเสียง`;
+}
 
 export function OrdersScreen() {
   const queue = useOrderQueue();
-  const [tab, setTab] = useState<QueueStatus>("preparing");
+  const [tab, setTab] = useState<OrderStatus>("preparing");
   const [toast, setToast] = useState<Toast | null>(null);
 
   useEffect(() => {
@@ -31,16 +38,24 @@ export function OrdersScreen() {
   const counts = queueTabs(queue.orders);
   const shown = ordersForTab(queue.orders, tab);
 
-  async function alert(order: QueueOrder, send: (id: string) => Promise<void>) {
-    await send(order.id);
-    setToast((prev) => ({ orderId: order.id, orderNo: order.orderNo, seq: (prev?.seq ?? 0) + 1 }));
+  function show(order: Order, text: string) {
+    setToast((prev) => ({ orderId: order.id, text, seq: (prev?.seq ?? 0) + 1 }));
+  }
+
+  async function alert(order: Order, send: (order: Order) => Promise<void>) {
+    try {
+      await send(order);
+      show(order, notifyToast(order));
+    } catch {
+      show(order, `แจ้ง ${order.orderNo} ไม่สำเร็จ · ตรวจอินเทอร์เน็ตแล้วลองอีกครั้ง`);
+    }
   }
 
   return (
     <div className="relative flex h-dvh w-full overflow-hidden bg-ground text-ink">
       <StaffNav badges={{ "/orders": counts.preparing }} />
 
-      <main className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6">
+      <main aria-busy={queue.status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-[28px] font-bold">คิวออเดอร์</h1>
           <div role="tablist" aria-label="สถานะออเดอร์" className="flex gap-1 rounded-[16px] bg-[#e6e8e3] p-1">
@@ -74,7 +89,9 @@ export function OrdersScreen() {
         </div>
 
         <div id="orders-panel" role="tabpanel" aria-labelledby={`tab-${tab}`}>
-          {shown.length === 0 ? (
+          {queue.status === "loading" ? null : queue.status === "error" ? (
+            <p className="mt-10 text-center text-[18px] text-ink-2">โหลดออเดอร์ไม่สำเร็จ · เปิดหน้านี้ใหม่อีกครั้ง</p>
+          ) : shown.length === 0 ? (
             <p className="mt-10 text-center text-[18px] text-ink-2">ไม่มีออเดอร์ในสถานะนี้</p>
           ) : (
             <div className="grid grid-cols-3 content-start gap-3.5">
@@ -86,8 +103,12 @@ export function OrdersScreen() {
                   onNotify={() => alert(order, queue.notify)}
                   onRenotify={() => alert(order, queue.renotify)}
                   onPickup={async () => {
-                    await queue.pickup(order.id);
-                    setToast((prev) => (prev?.orderId === order.id ? null : prev));
+                    try {
+                      await queue.pickup(order);
+                      setToast((prev) => (prev?.orderId === order.id ? null : prev));
+                    } catch {
+                      show(order, `บันทึกการรับของ ${order.orderNo} ไม่สำเร็จ · ลองอีกครั้ง`);
+                    }
                   }}
                 />
               ))}
@@ -105,7 +126,7 @@ export function OrdersScreen() {
           <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12l5 5 9-10" />
           </svg>
-          <span className="text-[16px] font-semibold">ส่งแจ้งเตือนไปที่มือถือลูกค้า {toast.orderNo} แล้ว</span>
+          <span className="text-[16px] font-semibold">{toast.text}</span>
           <button
             type="button"
             aria-label="ปิด"
@@ -129,7 +150,7 @@ function OrderCard({
   onRenotify,
   onPickup,
 }: {
-  order: QueueOrder;
+  order: Order;
   highlighted: boolean;
   onNotify: () => void;
   onRenotify: () => void;
@@ -169,7 +190,7 @@ function CardActions({
   onRenotify,
   onPickup,
 }: {
-  order: QueueOrder;
+  order: Order;
   onNotify: () => void;
   onRenotify: () => void;
   onPickup: () => void;
@@ -189,7 +210,7 @@ function CardActions({
     case "notified":
       return (
         <div className="flex flex-col gap-2.5">
-          <span className="text-[14px] font-semibold text-ok-ink">แจ้งลูกค้าแล้ว · {order.notifiedAt && formatClock(order.notifiedAt)}</span>
+          <span className="text-[14px] font-semibold text-ok-ink">แจ้งลูกค้าแล้ว · {formatClock(order.notifiedAt)}</span>
           <div className="grid grid-cols-2 gap-2.5">
             <button
               type="button"
@@ -208,7 +229,7 @@ function CardActions({
     case "picked_up":
       return (
         <span className="flex h-11 items-center justify-center rounded-[14px] bg-ground text-[15px] font-semibold text-ink-2">
-          ลูกค้ารับแล้ว · {order.pickedUpAt && formatClock(order.pickedUpAt)}
+          ลูกค้ารับแล้ว · {formatClock(order.pickedUpAt)}
         </span>
       );
   }

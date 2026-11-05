@@ -3,11 +3,13 @@
 import { useMemo, useState } from "react";
 import { shiftDate, startOfBusinessDate, type BusinessDate } from "@/domain/business-date";
 import { baht, formatBaht } from "@/domain/money";
+import { ledger } from "@/domain/ledger";
 import { summarize } from "@/domain/summary";
 import { useCatalog } from "@/lib/catalog";
 import { useOrdersOn } from "@/lib/orders";
 import { formatThaiDate } from "@/lib/thai-date";
 import { StaffNav } from "@/components/staff-nav";
+import { BillsTable } from "./bills-table";
 import { HourlyChart, peakOf } from "./hourly-chart";
 
 const money = (n: number) => formatBaht(baht(n));
@@ -29,6 +31,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
   const { products } = useCatalog();
   const { status, orders } = useOrdersOn(date);
   const summary = useMemo(() => summarize(orders), [orders]);
+  const bills = useMemo(() => ledger(orders), [orders]);
   const ready = status === "ready";
   const unitOf = new Map(products.map((p) => [p.id as string, p.unit]));
   const isToday = date === today;
@@ -44,7 +47,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
     <div className="flex h-dvh w-full overflow-hidden bg-ground text-ink">
       <StaffNav />
 
-      <main aria-busy={status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 p-6">
+      <main aria-busy={status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h1 className="text-[28px] font-bold">{isToday ? "สรุปยอดวันนี้" : "สรุปยอดรายวัน"}</h1>
@@ -90,39 +93,42 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
         ) : summary.billCount === 0 ? (
           <Notice title="ยังไม่มียอดขายในวันนี้" hint="เมื่อมีการขาย ยอดและสินค้าขายดีจะแสดงที่นี่" />
         ) : (
-          <div className="grid min-h-0 flex-1 grid-cols-2 gap-3.5">
-            <section className="flex flex-col gap-[18px] rounded-[22px] bg-card p-6">
-              <h2 className="text-[20px] font-bold">สินค้าขายดี 5 อันดับ</h2>
-              <ol data-testid="top-list" className="flex flex-col gap-[18px]">
-                {summary.topProducts.map((p, i) => (
-                  <li key={p.productId} className="flex flex-col gap-2">
-                    <div className="flex items-baseline gap-2.5">
-                      <span className="w-5 text-[15px] font-bold text-ink-2">{i + 1}</span>
-                      <span className="flex-1 text-[18px] font-semibold">{p.name}</span>
-                      <span className="text-[15px] text-ink-2">
-                        {p.qty} {unitOf.get(p.productId) ?? ""}
-                      </span>
-                      <span className="w-[76px] text-right text-[18px] font-bold">{money(p.revenue)}</span>
-                    </div>
-                    <div aria-hidden="true" className="ml-[30px] h-2 rounded-full bg-[#f0f1ee]">
-                      <div
-                        className={`h-2 rounded-full ${i === 0 ? "bg-accent" : "bg-[#8c918d]"}`}
-                        style={{ width: `${Math.round((p.qty / maxQty) * 100)}%` }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </section>
+          <>
+            <div className="grid h-[460px] shrink-0 grid-cols-2 gap-3.5">
+              <section className="flex flex-col gap-[18px] rounded-[22px] bg-card p-6">
+                <h2 className="text-[20px] font-bold">สินค้าขายดี 5 อันดับ</h2>
+                <ol data-testid="top-list" className="flex flex-col gap-[18px]">
+                  {summary.topProducts.map((p, i) => (
+                    <li key={p.productId} className="flex flex-col gap-2">
+                      <div className="flex items-baseline gap-2.5">
+                        <span className="w-5 text-[15px] font-bold text-ink-2">{i + 1}</span>
+                        <span className="flex-1 text-[18px] font-semibold">{p.name}</span>
+                        <span className="text-[15px] text-ink-2">
+                          {p.qty} {unitOf.get(p.productId) ?? ""}
+                        </span>
+                        <span className="w-[76px] text-right text-[18px] font-bold">{money(p.revenue)}</span>
+                      </div>
+                      <div aria-hidden="true" className="ml-[30px] h-2 rounded-full bg-[#f0f1ee]">
+                        <div
+                          className={`h-2 rounded-full ${i === 0 ? "bg-accent" : "bg-[#8c918d]"}`}
+                          style={{ width: `${Math.round((p.qty / maxQty) * 100)}%` }}
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
 
-            <section className="flex min-h-0 flex-col gap-3 rounded-[22px] bg-card p-6">
-              <div className="flex items-baseline justify-between gap-3">
-                <h2 className="text-[20px] font-bold">ยอดขายรายชั่วโมง</h2>
-                {peak && <span className="text-[14px] text-ink-2">ขายดีสุด {hourLabel(peak.hour)}–{hourLabel(peak.hour + 1)}</span>}
-              </div>
-              <HourlyChart hourly={summary.hourly} />
-            </section>
-          </div>
+              <section className="flex min-h-0 flex-col gap-3 rounded-[22px] bg-card p-6">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h2 className="text-[20px] font-bold">ยอดขายรายชั่วโมง</h2>
+                  {peak && <span className="text-[14px] text-ink-2">ขายดีสุด {hourLabel(peak.hour)}–{hourLabel(peak.hour + 1)}</span>}
+                </div>
+                <HourlyChart hourly={summary.hourly} />
+              </section>
+            </div>
+            <BillsTable data={bills} date={date} />
+          </>
         )}
       </main>
     </div>

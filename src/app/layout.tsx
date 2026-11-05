@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans_Thai } from "next/font/google";
+import { SHOP_NAME } from "@/lib/shop";
 import "./globals.css";
 
 const plexThai = IBM_Plex_Sans_Thai({
@@ -9,7 +10,7 @@ const plexThai = IBM_Plex_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "POS ร้านในตลาด",
+  title: `POS ${SHOP_NAME}`,
 };
 
 export const viewport: Viewport = {

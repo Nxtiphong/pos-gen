@@ -2,6 +2,7 @@
 
 import { arrayRemove, doc, writeBatch } from "firebase/firestore";
 import { transition, type Order, type OrderEvent } from "@/domain/order";
+import { getStaffAuth } from "./firebase/auth";
 import { getDb } from "./firebase/client";
 import { useOrdersOn, useToday, type OrdersOn } from "./orders";
 
@@ -20,6 +21,14 @@ async function apply(order: Order, event: OrderEvent): Promise<void> {
   batch.update(doc(db, "bills", order.publicToken), result.progress);
   batch.set(doc(db, "queues", order.businessDate), { preparing: arrayRemove(order.orderNo) }, { merge: true });
   await batch.commit();
+  if (result.progress.status === "notified") void pushReady(order);
+}
+
+// The in-page alert covers customers with the bill open; the push reaches phones whose screen is off.
+async function pushReady(order: Order): Promise<void> {
+  const idToken = await getStaffAuth().currentUser?.getIdToken();
+  if (!idToken) return;
+  await fetch(`/api/orders/${order.id}/push`, { method: "POST", headers: { Authorization: `Bearer ${idToken}` } }).catch(() => {});
 }
 
 const actions = {

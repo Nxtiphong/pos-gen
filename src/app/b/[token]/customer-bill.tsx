@@ -7,6 +7,7 @@ import { queueAhead, type Bill, type PublicToken } from "@/domain/order";
 import { itemsSummary } from "@/domain/queue";
 import { alertAudioContext, unlockAlertAudio, useAlertUnlocked } from "@/lib/alert-audio";
 import { useBill, usePreparingQueue } from "@/lib/orders";
+import { enablePush, resubscribeIfGranted, type PushState } from "@/lib/push-client";
 import { startReadyAlert } from "@/lib/ready-alert";
 import { SHOP_NAME } from "@/lib/shop";
 import { formatBillDateTime } from "@/lib/thai-date";
@@ -28,6 +29,17 @@ export function CustomerBill({ token }: { token: PublicToken }) {
   }, []);
 
   const unlocked = useAlertUnlocked();
+  const [push, setPush] = useState<PushState>("checking");
+  const [gateOpen, setGateOpen] = useState(true);
+  const billFound = bill.state === "ready";
+  useEffect(() => {
+    if (billFound) resubscribeIfGranted(token).then(setPush);
+  }, [billFound, token]);
+  const askPush = () => {
+    setGateOpen(false);
+    setPush("checking");
+    enablePush(token).then(setPush);
+  };
   const alert = useReadyAlert(bill.state === "ready" ? bill.value : null, unlocked);
 
   if (bill.state === "loading") return <Shell busy />;
@@ -46,8 +58,8 @@ export function CustomerBill({ token }: { token: PublicToken }) {
   }
   return (
     <>
-      <BillView bill={bill.value} ahead={queueAhead(queue, bill.value.orderNo)} unlocked={unlocked} />
-      {bill.value.status === "preparing" && !unlocked && <AlertGate />}
+      <BillView bill={bill.value} ahead={queueAhead(queue, bill.value.orderNo)} unlocked={unlocked} push={push} onAskPush={askPush} />
+      {bill.value.status === "preparing" && gateOpen && push !== "on" && <AlertGate onEnable={askPush} />}
     </>
   );
 }
@@ -105,7 +117,19 @@ export function BillMissing() {
   );
 }
 
-function BillView({ bill, ahead, unlocked }: { bill: Bill; ahead: number; unlocked: boolean }) {
+function BillView({
+  bill,
+  ahead,
+  unlocked,
+  push,
+  onAskPush,
+}: {
+  bill: Bill;
+  ahead: number;
+  unlocked: boolean;
+  push: PushState;
+  onAskPush: () => void;
+}) {
   return (
     <Shell>
       {bill.status === "picked_up" ? (
@@ -139,6 +163,7 @@ function BillView({ bill, ahead, unlocked }: { bill: Bill; ahead: number; unlock
       )}
 
       {bill.status === "preparing" && <AlertToggle on={unlocked} />}
+      {bill.status === "preparing" && unlocked && <PushStatus state={push} onAsk={onAskPush} />}
 
       <section aria-label="รายละเอียดบิล" className="flex flex-col gap-3 rounded-[24px] bg-card px-[22px] py-5">
         <ul className="flex flex-col gap-2.5">
@@ -206,7 +231,7 @@ function AlertToggle({ on }: { on: boolean }) {
   );
 }
 
-function AlertGate() {
+function AlertGate({ onEnable }: { onEnable: () => void }) {
   return (
     <div className="fixed inset-0 z-10 flex items-end justify-center bg-ink/55 p-4 sm:items-center">
       <div
@@ -223,15 +248,18 @@ function AlertGate() {
             เปิดเสียงและการสั่น
           </h2>
           <p className="text-[15px] leading-[1.5] text-ink-2">
-            แตะ 1 ครั้งเพื่อให้มือถือส่งเสียงและสั่นเมื่อของพร้อม
+            แตะ 1 ครั้งแล้วกด &ldquo;อนุญาต&rdquo; การแจ้งเตือน
             <br />
-            แล้วเปิดหน้านี้ค้างไว้
+            มือถือจะส่งเสียงและสั่นเมื่อของพร้อม แม้ปิดจออยู่
           </p>
         </div>
         <button
           type="button"
           autoFocus
-          onClick={unlockAlertAudio}
+          onClick={() => {
+            unlockAlertAudio();
+            onEnable();
+          }}
           className="flex h-[58px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[18px] bg-accent text-[18px] font-bold text-white"
         >
           <BellIcon size={22} />
@@ -240,5 +268,39 @@ function AlertGate() {
         {!canVibrate() && <p className="text-[13px] text-ink-2">iPhone ไม่รองรับการสั่น จะใช้เสียงและจอเขียวแทน</p>}
       </div>
     </div>
+  );
+}
+
+const PUSH_COPY: Record<Exclude<PushState, "checking" | "off" | "failed">, { tone: "ok" | "warn"; text: string }> = {
+  on: { tone: "ok", text: "แจ้งเตือนตอนปิดจอ · เปิดแล้ว" },
+  denied: { tone: "warn", text: "การแจ้งเตือนถูกปิดไว้ · เปิดได้ที่การตั้งค่าเบราว์เซอร์ › การแจ้งเตือน แล้วโหลดหน้านี้ใหม่" },
+  ios: { tone: "warn", text: "iPhone แจ้งเตือนตอนปิดจอไม่ได้ · เปิดหน้านี้ค้างไว้ จะมีเสียงและจอเขียวเมื่อของพร้อม" },
+  unsupported: { tone: "warn", text: "เบราว์เซอร์นี้แจ้งเตือนตอนปิดจอไม่ได้ · เปิดหน้านี้ค้างไว้" },
+};
+
+function PushStatus({ state, onAsk }: { state: PushState; onAsk: () => void }) {
+  if (state === "checking") return null;
+  if (state === "off" || state === "failed") {
+    return (
+      <button
+        type="button"
+        onClick={onAsk}
+        className="flex min-h-[58px] cursor-pointer items-center justify-center gap-2.5 rounded-[18px] border border-line bg-card px-4 text-[16px] font-semibold text-ink"
+      >
+        <BellIcon size={20} />
+        {state === "failed" ? "เปิดแจ้งเตือนตอนปิดจอไม่สำเร็จ · ลองอีกครั้ง" : "เปิดแจ้งเตือนตอนปิดจอ"}
+      </button>
+    );
+  }
+  const { tone, text } = PUSH_COPY[state];
+  return (
+    <p
+      role="status"
+      className={`rounded-[18px] px-4 py-3.5 text-center text-[15px] leading-[1.5] font-semibold ${
+        tone === "ok" ? "bg-ok-soft text-ok-ink" : "bg-accent-soft text-accent-deep"
+      }`}
+    >
+      {text}
+    </p>
   );
 }

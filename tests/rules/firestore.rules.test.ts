@@ -80,6 +80,13 @@ describe("anonymous customer", () => {
     await assertFails(getDocs(collection(db, "categories")));
   });
 
+  it("cannot read or write push subscriptions, even as staff, because only the server sends pushes", async () => {
+    for (const db of [anon(), staff()]) {
+      await assertFails(getDoc(doc(db, "pushSubscriptions/tok_aaaaaaaaaaaaaaaaaaaaaa")));
+      await assertFails(setDoc(doc(db, "pushSubscriptions/tok_aaaaaaaaaaaaaaaaaaaaaa"), { subscription: {} }));
+    }
+  });
+
   it("cannot touch collections the architecture does not name", async () => {
     await assertFails(setDoc(doc(anon(), "anything/x"), { a: 1 }));
   });

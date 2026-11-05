@@ -73,13 +73,13 @@ Leave `NEXT_PUBLIC_USE_EMULATORS`, `NEXT_PUBLIC_EMULATOR_HOST`, `FIRESTORE_EMULA
 
 1. Authentication > Sign-in method: enable Email/Password.
 2. Storage > Get started: create the project's default bucket. Product images go to `products/{productId}/{filename}` in that bucket, and `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` must name it.
-3. Create the staff account and its `staff: true` claim by running the seed against the project from your machine. Move `.env.development.local` aside first so the emulator hosts in it do not apply, then export the server variables above (`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`) in that shell and run:
+3. Create the staff account and its `staff: true` claim from your machine, with the server variables in `.env.local`:
 
    ```bash
-   SEED_STAFF_PASSWORD='<a strong password>' npm run seed
+   npm run seed:prod
    ```
 
-   The seed also writes the seed catalog. Rerunning it resets the staff password and keeps the claim.
+   It reads `.env.local` (never `.env.development.local`), refuses to run if an emulator host is set, and asks for the staff password twice without echoing it. It writes the seed catalog only when `products` is empty, so rerunning it just resets the staff password and keeps the claim.
 4. Authentication > Settings > User actions: turn off "Enable create (sign-up)". The rules already deny accounts without the `staff` claim, so this is defense in depth, not the only guard.
 5. Deploy the rules, indexes and storage rules with the Firebase CLI:
 

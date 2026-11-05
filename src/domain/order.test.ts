@@ -73,6 +73,13 @@ describe("transition", () => {
     });
   });
 
+  it("pickup closes a preparing order directly when the customer collects without a notification", () => {
+    expect(transition(preparing, "pickup", t2)).toEqual({
+      ok: true,
+      progress: { status: "picked_up", notifyCount: 0, pickedUpAt: t2 },
+    });
+  });
+
   it("pickup closes a notified order and keeps its notify history", () => {
     expect(transition({ status: "notified", notifyCount: 2, notifiedAt: t2 }, "pickup", t3)).toEqual({
       ok: true,
@@ -83,7 +90,6 @@ describe("transition", () => {
   it("rejects every transition the table does not list", () => {
     const pickedUp: OrderProgress = { status: "picked_up", notifyCount: 1, notifiedAt: t1, pickedUpAt: t2 };
     expect(transition(preparing, "renotify", t2)).toEqual({ ok: false, error: { from: "preparing", event: "renotify" } });
-    expect(transition(preparing, "pickup", t2)).toEqual({ ok: false, error: { from: "preparing", event: "pickup" } });
     expect(transition(notified, "notify", t2)).toEqual({ ok: false, error: { from: "notified", event: "notify" } });
     expect(transition(pickedUp, "notify", t3)).toEqual({ ok: false, error: { from: "picked_up", event: "notify" } });
     expect(transition(pickedUp, "renotify", t3)).toEqual({ ok: false, error: { from: "picked_up", event: "renotify" } });

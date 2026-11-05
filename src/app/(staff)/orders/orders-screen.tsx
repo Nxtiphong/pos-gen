@@ -198,14 +198,24 @@ function CardActions({
   switch (order.status) {
     case "preparing":
       return (
-        <button
-          type="button"
-          onClick={onNotify}
-          className="flex h-14 cursor-pointer items-center justify-center gap-2.5 rounded-[16px] bg-accent text-[18px] font-bold text-white"
-        >
-          <BellIcon size={22} strokeWidth={2.2} />
-          แจ้งรับของ
-        </button>
+        <div className="grid grid-cols-[2fr_1fr] gap-2.5">
+          <button
+            type="button"
+            onClick={onNotify}
+            className="flex h-14 cursor-pointer items-center justify-center gap-2.5 rounded-[16px] bg-accent text-[18px] font-bold text-white"
+          >
+            <BellIcon size={22} strokeWidth={2.2} />
+            แจ้งรับของ
+          </button>
+          <button
+            type="button"
+            onClick={onPickup}
+            aria-label={`${order.orderNo} ลูกค้ารับของแล้ว ไม่ต้องแจ้ง`}
+            className="h-14 cursor-pointer rounded-[16px] border border-line bg-card text-[16px] font-semibold text-ink"
+          >
+            รับของแล้ว
+          </button>
+        </div>
       );
     case "notified":
       return (

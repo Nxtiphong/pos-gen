@@ -158,12 +158,12 @@ function toDate(value: unknown): Date | undefined {
 
 function parseProgress(data: DocumentData): OrderProgress {
   const notifyCount: number = data.notifyCount ?? 0;
-  const notifiedAt = toDate(data.notifiedAt) ?? new Date(0);
+  const notifiedAt = toDate(data.notifiedAt);
   switch (data.status) {
     case "notified":
-      return { status: "notified", notifyCount, notifiedAt };
+      return { status: "notified", notifyCount, notifiedAt: notifiedAt ?? new Date(0) };
     case "picked_up":
-      return { status: "picked_up", notifyCount, notifiedAt, pickedUpAt: toDate(data.pickedUpAt) ?? new Date(0) };
+      return { status: "picked_up", notifyCount, ...(notifiedAt && { notifiedAt }), pickedUpAt: toDate(data.pickedUpAt) ?? new Date(0) };
     default:
       return { status: "preparing", notifyCount: 0 };
   }

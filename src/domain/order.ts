@@ -18,7 +18,7 @@ export type OrderStatus = "preparing" | "notified" | "picked_up";
 export type OrderProgress =
   | { status: "preparing"; notifyCount: 0 }
   | { status: "notified"; notifyCount: number; notifiedAt: Date }
-  | { status: "picked_up"; notifyCount: number; notifiedAt: Date; pickedUpAt: Date };
+  | { status: "picked_up"; notifyCount: number; notifiedAt?: Date; pickedUpAt: Date };
 
 type Receipt = {
   orderNo: OrderNo;
@@ -68,6 +68,7 @@ type Step<S extends OrderStatus> = (progress: Extract<OrderProgress, { status: S
 const TRANSITIONS: { [S in OrderStatus]: Partial<Record<OrderEvent, Step<S>>> } = {
   preparing: {
     notify: (_, now) => ({ status: "notified", notifyCount: 1, notifiedAt: now }),
+    pickup: (_, now) => ({ status: "picked_up", notifyCount: 0, pickedUpAt: now }),
   },
   notified: {
     renotify: (p, now) => ({ status: "notified", notifyCount: p.notifyCount + 1, notifiedAt: now }),

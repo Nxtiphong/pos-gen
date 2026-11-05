@@ -13,6 +13,13 @@ export function formatThaiDate(date: Date): string {
     .join("");
 }
 
+const billDate = new Intl.DateTimeFormat("th-TH", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "Asia/Bangkok",
+});
+
 const clock = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
   minute: "2-digit",
@@ -22,4 +29,8 @@ const clock = new Intl.DateTimeFormat("en-GB", {
 
 export function formatClock(date: Date): string {
   return clock.format(date);
+}
+
+export function formatBillDateTime(date: Date): string {
+  return `${billDate.format(date)} · ${formatClock(date)}`;
 }

@@ -49,6 +49,42 @@ npm run test:rules  # firestore.rules, storage.rules and createOrder against the
 npm run build
 ```
 
-## Production
+## Deploy to Vercel
 
-Copy `.env.example` into the Vercel project settings and fill in the web app config and a service account. Leave `NEXT_PUBLIC_USE_EMULATORS`, `FIRESTORE_EMULATOR_HOST` and `FIREBASE_AUTH_EMULATOR_HOST` unset. In the Firebase console, turn off sign-up (Authentication > Settings > User actions > Enable create) after creating the staff account. The rules only grant staff access to accounts with the `staff: true` custom claim that `npm run seed` sets, so this is defense in depth.
+Nothing in this section runs automatically. Every command targets the real Firebase project, so pass its id explicitly (`.firebaserc` defaults to the demo emulator project).
+
+### Environment variables in Vercel
+
+Set these in Vercel > Project > Settings > Environment Variables (names only; values come from the Firebase console):
+
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_CLIENT_EMAIL`
+- `FIREBASE_PRIVATE_KEY` (the PEM on one line with literal `\n` between lines)
+
+Leave `NEXT_PUBLIC_USE_EMULATORS`, `NEXT_PUBLIC_EMULATOR_HOST`, `FIRESTORE_EMULATOR_HOST` and `FIREBASE_AUTH_EMULATOR_HOST` unset in Vercel. `SEED_STAFF_PASSWORD` is only for the seed command below, not for Vercel.
+
+### Firebase console
+
+1. Authentication > Sign-in method: enable Email/Password.
+2. Storage > Get started: create the project's default bucket. Product images go to `products/{productId}/{filename}` in that bucket, and `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` must name it.
+3. Create the staff account and its `staff: true` claim by running the seed against the project from your machine. Move `.env.development.local` aside first so the emulator hosts in it do not apply, then export the server variables above (`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`) in that shell and run:
+
+   ```bash
+   SEED_STAFF_PASSWORD='<a strong password>' npm run seed
+   ```
+
+   The seed also writes the seed catalog. Rerunning it resets the staff password and keeps the claim.
+4. Authentication > Settings > User actions: turn off "Enable create (sign-up)". The rules already deny accounts without the `staff` claim, so this is defense in depth, not the only guard.
+5. Deploy the rules, indexes and storage rules with the Firebase CLI:
+
+   ```bash
+   firebase deploy --only firestore:rules,firestore:indexes,storage --project <your-project-id>
+   ```
+
+Then deploy the app from Vercel (Git push or `vercel --prod`).

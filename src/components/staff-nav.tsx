@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { usePreparingQueue, useToday } from "@/lib/orders";
 
 export type StaffSection = "/sell" | "/orders" | "/summary" | "/products";
 
@@ -58,8 +59,9 @@ const NAV_ITEMS: { href: StaffSection; label: string; icon: ReactNode }[] = [
   },
 ];
 
-export function StaffNav({ badges = {} }: { badges?: Partial<Record<StaffSection, number>> }) {
+export function StaffNav() {
   const pathname = usePathname();
+  const preparing = usePreparingQueue(useToday()).length;
   return (
     <nav aria-label="เมนูหลัก" className="flex w-[88px] shrink-0 flex-col items-center gap-2 border-r border-line bg-card py-5">
       <div aria-hidden="true" className="mb-4 flex size-12 items-center justify-center rounded-[14px] bg-ink text-white">
@@ -72,7 +74,7 @@ export function StaffNav({ badges = {} }: { badges?: Partial<Record<StaffSection
       </div>
       {NAV_ITEMS.map((item) => {
         const active = pathname.startsWith(item.href);
-        const badge = badges[item.href];
+        const badge = item.href === "/orders" ? preparing : 0;
         return (
           <Link
             key={item.href}

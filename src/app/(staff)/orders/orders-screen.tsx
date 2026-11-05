@@ -53,7 +53,7 @@ export function OrdersScreen() {
 
   return (
     <div className="relative flex h-dvh w-full overflow-hidden bg-ground text-ink">
-      <StaffNav badges={{ "/orders": counts.preparing }} />
+      <StaffNav />
 
       <main aria-busy={queue.status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6">
         <div className="flex items-center justify-between gap-4">

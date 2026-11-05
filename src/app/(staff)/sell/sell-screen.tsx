@@ -7,6 +7,7 @@ import { cartCount, cartLines, cartTotal } from "@/domain/cart";
 import { formatBaht } from "@/domain/money";
 import { useCart } from "@/lib/cart-context";
 import { useCatalog } from "@/lib/catalog";
+import { StaffNav } from "@/components/staff-nav";
 
 type Filter = CategoryId | "all";
 
@@ -22,7 +23,7 @@ export function SellScreen({ today }: { today: string }) {
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-ground text-ink">
-      <SideNav />
+      <StaffNav />
 
       <main className="flex min-w-0 flex-1 flex-col gap-5 p-6">
         <div className="flex items-baseline justify-between gap-4">
@@ -169,71 +170,5 @@ function BagIcon({ size, strokeWidth }: { size: number; strokeWidth: number }) {
       <path d="M6 7h12l-1 13H7L6 7z" />
       <path d="M9 7a3 3 0 0 1 6 0" />
     </svg>
-  );
-}
-
-const NAV_ITEMS = [
-  { href: "/sell", label: "ขาย", icon: <BagIcon size={24} strokeWidth={2} /> },
-  {
-    href: "/orders",
-    label: "ออเดอร์",
-    icon: (
-      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />
-        <path d="M9 8h6M9 12h6" />
-      </svg>
-    ),
-  },
-  {
-    href: "/summary",
-    label: "สรุปยอด",
-    icon: (
-      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 20h16" />
-        <path d="M7 16v-5M12 16V6M17 16v-8" />
-      </svg>
-    ),
-  },
-  {
-    href: "/products",
-    label: "สินค้า",
-    icon: (
-      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 7l9-4 9 4-9 4-9-4z" />
-        <path d="M3 7v10l9 4 9-4V7" />
-        <path d="M12 11v10" />
-      </svg>
-    ),
-  },
-];
-
-function SideNav() {
-  return (
-    <nav aria-label="เมนูหลัก" className="flex w-[88px] shrink-0 flex-col items-center gap-2 border-r border-line bg-card py-5">
-      <div aria-hidden="true" className="mb-4 flex size-12 items-center justify-center rounded-[14px] bg-ink text-white">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M4 9l1.5-5h13L20 9" />
-          <path d="M4 9h16" />
-          <path d="M5 9v11h14V9" />
-          <path d="M10 20v-5h4v5" />
-        </svg>
-      </div>
-      {NAV_ITEMS.map((item) => {
-        const active = item.href === "/sell";
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={active ? "page" : undefined}
-            className={`flex w-[72px] flex-col items-center gap-1 rounded-[14px] py-2.5 text-[13px] ${
-              active ? "bg-accent-soft font-semibold text-accent-ink" : "font-medium text-ink-2"
-            }`}
-          >
-            {item.icon}
-            {item.label}
-          </Link>
-        );
-      })}
-    </nav>
   );
 }

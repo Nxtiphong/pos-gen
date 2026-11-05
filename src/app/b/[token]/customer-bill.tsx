@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ReadyScreen } from "@/components/customer/ready-screen";
 import { baht, formatBaht } from "@/domain/money";
 import { queueAhead, type Bill, type PublicToken } from "@/domain/order";
-import { unlockAlertAudio } from "@/lib/alert-audio";
+import { itemsSummary } from "@/domain/queue";
+import { alertAudioContext, unlockAlertAudio } from "@/lib/alert-audio";
 import { useBill, usePreparingQueue } from "@/lib/orders";
+import { startReadyAlert } from "@/lib/ready-alert";
 import { SHOP_NAME } from "@/lib/shop";
 import { formatBillDateTime } from "@/lib/thai-date";
 
@@ -19,9 +22,47 @@ export function CustomerBill({ token }: { token: PublicToken }) {
     fetch(`/api/bills/${token}/scan`, { method: "POST" }).catch(() => {});
   }, [bill.state, token]);
 
+  const alert = useReadyAlert(bill.state === "ready" ? bill.value : null);
+
   if (bill.state === "loading") return <Shell busy />;
   if (bill.state === "missing") return <BillMissing />;
+  if (bill.value.status === "notified") {
+    return (
+      <ReadyScreen
+        shopName={SHOP_NAME}
+        orderNo={bill.value.orderNo}
+        itemsLine={itemsSummary(bill.value.lines)}
+        total={bill.value.total}
+        ringing={alert.ringing}
+        onStop={alert.stop}
+      />
+    );
+  }
   return <BillView bill={bill.value} ahead={queueAhead(queue, bill.value.orderNo)} />;
+}
+
+// Rings when notifyCount rises above the count this page last saw. The first snapshot only sets that
+// baseline, unless the order is already notified when the customer opens the page.
+function useReadyAlert(bill: Bill | null): { ringing: boolean; stop: () => void } {
+  const seen = useRef<number | null>(null);
+  const [ringingFor, setRingingFor] = useState<number | null>(null);
+  const status = bill?.status;
+  const notifyCount = bill?.notifyCount;
+
+  useEffect(() => {
+    if (status === undefined || notifyCount === undefined) return;
+    const rose = seen.current === null ? status === "notified" : notifyCount > seen.current;
+    seen.current = notifyCount;
+    if (status !== "notified") setRingingFor(null);
+    else if (rose) setRingingFor(notifyCount);
+  }, [status, notifyCount]);
+
+  useEffect(() => {
+    if (ringingFor === null) return;
+    return startReadyAlert(alertAudioContext());
+  }, [ringingFor]);
+
+  return { ringing: ringingFor !== null, stop: () => setRingingFor(null) };
 }
 
 function Shell({ children, busy }: { children?: ReactNode; busy?: boolean }) {
@@ -56,18 +97,33 @@ export function BillMissing() {
 function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
   return (
     <Shell>
-      <section className="flex flex-col items-center gap-2.5 rounded-[28px] bg-card p-6 text-center">
-        <span className="text-[15px] text-ink-2">หมายเลขออเดอร์</span>
-        <span className="text-[92px] leading-none font-bold tracking-[-1px]">{bill.orderNo}</span>
-        <StatusLine bill={bill} ahead={ahead} />
-        {bill.status === "preparing" && (
+      {bill.status === "picked_up" ? (
+        <section className="flex flex-col items-center gap-3 rounded-[28px] bg-card p-6 text-center">
+          <span aria-hidden="true" className="flex size-[72px] items-center justify-center rounded-full bg-ok-soft text-ok">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12l5 5 9-10" />
+            </svg>
+          </span>
+          <h1 role="status" className="text-[24px] leading-[1.3] font-bold">
+            รับของแล้ว · ขอบคุณที่อุดหนุน
+          </h1>
+          <span className="text-[15px] text-ink-2">ออเดอร์ {bill.orderNo}</span>
+        </section>
+      ) : (
+        <section className="flex flex-col items-center gap-2.5 rounded-[28px] bg-card p-6 text-center">
+          <span className="text-[15px] text-ink-2">หมายเลขออเดอร์</span>
+          <span className="text-[92px] leading-none font-bold tracking-[-1px]">{bill.orderNo}</span>
+          <span role="status" className="flex h-9 items-center gap-2 rounded-full bg-accent-soft px-3.5 text-[15px] font-semibold text-accent-deep">
+            <span aria-hidden="true" className="wait-dot size-2.5 rounded-full bg-accent" />
+            กำลังเตรียม · คิวก่อนหน้า {ahead} ออเดอร์
+          </span>
           <p className="mt-1 text-[15px] leading-[1.5] text-ink-2">
             เปิดหน้านี้ค้างไว้ เมื่อของพร้อม
             <br />
             มือถือจะเด้งแจ้งเตือนพร้อมเสียง
           </p>
-        )}
-      </section>
+        </section>
+      )}
 
       {bill.status === "preparing" && <AlertToggle />}
 
@@ -100,30 +156,6 @@ function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
       </section>
     </Shell>
   );
-}
-
-function StatusLine({ bill, ahead }: { bill: Bill; ahead: number }) {
-  switch (bill.status) {
-    case "preparing":
-      return (
-        <span role="status" className="flex h-9 items-center gap-2 rounded-full bg-accent-soft px-3.5 text-[15px] font-semibold text-accent-deep">
-          <span aria-hidden="true" className="wait-dot size-2.5 rounded-full bg-accent" />
-          กำลังเตรียม · คิวก่อนหน้า {ahead} ออเดอร์
-        </span>
-      );
-    case "notified":
-      return (
-        <span role="status" className="flex h-9 items-center rounded-full bg-ok-soft px-3.5 text-[15px] font-semibold text-ok-ink">
-          ของพร้อมแล้ว · มารับที่ร้านได้เลย
-        </span>
-      );
-    case "picked_up":
-      return (
-        <span role="status" className="flex h-9 items-center rounded-full bg-ground px-3.5 text-[15px] font-semibold text-ink-2">
-          รับของแล้ว · ขอบคุณที่อุดหนุน
-        </span>
-      );
-  }
 }
 
 function AlertToggle() {

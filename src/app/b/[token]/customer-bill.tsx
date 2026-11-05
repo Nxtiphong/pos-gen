@@ -5,7 +5,7 @@ import { ReadyScreen } from "@/components/customer/ready-screen";
 import { baht, formatBaht } from "@/domain/money";
 import { queueAhead, type Bill, type PublicToken } from "@/domain/order";
 import { itemsSummary } from "@/domain/queue";
-import { alertAudioContext, unlockAlertAudio } from "@/lib/alert-audio";
+import { alertAudioContext, unlockAlertAudio, useAlertUnlocked } from "@/lib/alert-audio";
 import { useBill, usePreparingQueue } from "@/lib/orders";
 import { startReadyAlert } from "@/lib/ready-alert";
 import { SHOP_NAME } from "@/lib/shop";
@@ -22,7 +22,13 @@ export function CustomerBill({ token }: { token: PublicToken }) {
     fetch(`/api/bills/${token}/scan`, { method: "POST" }).catch(() => {});
   }, [bill.state, token]);
 
-  const alert = useReadyAlert(bill.state === "ready" ? bill.value : null);
+  useEffect(() => {
+    document.addEventListener("pointerdown", unlockAlertAudio, { capture: true });
+    return () => document.removeEventListener("pointerdown", unlockAlertAudio, { capture: true });
+  }, []);
+
+  const unlocked = useAlertUnlocked();
+  const alert = useReadyAlert(bill.state === "ready" ? bill.value : null, unlocked);
 
   if (bill.state === "loading") return <Shell busy />;
   if (bill.state === "missing") return <BillMissing />;
@@ -38,12 +44,17 @@ export function CustomerBill({ token }: { token: PublicToken }) {
       />
     );
   }
-  return <BillView bill={bill.value} ahead={queueAhead(queue, bill.value.orderNo)} />;
+  return (
+    <>
+      <BillView bill={bill.value} ahead={queueAhead(queue, bill.value.orderNo)} unlocked={unlocked} />
+      {bill.value.status === "preparing" && !unlocked && <AlertGate />}
+    </>
+  );
 }
 
 // Rings when notifyCount rises above the count this page last saw. The first snapshot only sets that
 // baseline, unless the order is already notified when the customer opens the page.
-function useReadyAlert(bill: Bill | null): { ringing: boolean; stop: () => void } {
+function useReadyAlert(bill: Bill | null, unlocked: boolean): { ringing: boolean; stop: () => void } {
   const seen = useRef<number | null>(null);
   const [ringingFor, setRingingFor] = useState<number | null>(null);
   const status = bill?.status;
@@ -59,8 +70,8 @@ function useReadyAlert(bill: Bill | null): { ringing: boolean; stop: () => void 
 
   useEffect(() => {
     if (ringingFor === null) return;
-    return startReadyAlert(alertAudioContext());
-  }, [ringingFor]);
+    return startReadyAlert(unlocked ? alertAudioContext() : null);
+  }, [ringingFor, unlocked]);
 
   return { ringing: ringingFor !== null, stop: () => setRingingFor(null) };
 }
@@ -94,7 +105,7 @@ export function BillMissing() {
   );
 }
 
-function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
+function BillView({ bill, ahead, unlocked }: { bill: Bill; ahead: number; unlocked: boolean }) {
   return (
     <Shell>
       {bill.status === "picked_up" ? (
@@ -127,7 +138,7 @@ function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
         </section>
       )}
 
-      {bill.status === "preparing" && <AlertToggle />}
+      {bill.status === "preparing" && <AlertToggle on={unlocked} />}
 
       <section aria-label="รายละเอียดบิล" className="flex flex-col gap-3 rounded-[24px] bg-card px-[22px] py-5">
         <ul className="flex flex-col gap-2.5">
@@ -160,16 +171,25 @@ function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
   );
 }
 
-function AlertToggle() {
-  const [on, setOn] = useState(false);
+const BellIcon = ({ size }: { size: number }) => (
+  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z" />
+    <path d="M10 21h4" />
+  </svg>
+);
 
+function canVibrate() {
+  return typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+}
+
+function AlertToggle({ on }: { on: boolean }) {
   if (on) {
     return (
       <div role="status" className="flex h-[58px] items-center justify-center gap-2.5 rounded-[18px] bg-ok-soft text-[16px] font-semibold text-ok-ink">
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 12l5 5 9-10" />
         </svg>
-        เปิดแจ้งเตือนแล้ว · เสียงและสั่น
+        {canVibrate() ? "เปิดแจ้งเตือนแล้ว · เสียงและสั่น" : "เปิดแจ้งเตือนแล้ว · เสียงและจอเขียว"}
       </div>
     );
   }
@@ -177,17 +197,48 @@ function AlertToggle() {
   return (
     <button
       type="button"
-      onClick={() => {
-        unlockAlertAudio().catch(() => false);
-        setOn(true);
-      }}
+      onClick={unlockAlertAudio}
       className="flex h-[58px] cursor-pointer items-center justify-center gap-2.5 rounded-[18px] bg-ink text-[18px] font-bold text-white"
     >
-      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z" />
-        <path d="M10 21h4" />
-      </svg>
+      <BellIcon size={22} />
       เปิดเสียงแจ้งเตือน
     </button>
+  );
+}
+
+function AlertGate() {
+  return (
+    <div className="fixed inset-0 z-10 flex items-end justify-center bg-ink/55 p-4 sm:items-center">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="alert-gate-title"
+        className="flex w-full max-w-[440px] flex-col items-center gap-4 rounded-[28px] bg-card p-6 text-center"
+      >
+        <span aria-hidden="true" className="flex size-16 items-center justify-center rounded-full bg-accent-soft text-accent">
+          <BellIcon size={32} />
+        </span>
+        <div className="flex flex-col gap-1.5">
+          <h2 id="alert-gate-title" className="text-[22px] font-bold">
+            เปิดเสียงและการสั่น
+          </h2>
+          <p className="text-[15px] leading-[1.5] text-ink-2">
+            แตะ 1 ครั้งเพื่อให้มือถือส่งเสียงและสั่นเมื่อของพร้อม
+            <br />
+            แล้วเปิดหน้านี้ค้างไว้
+          </p>
+        </div>
+        <button
+          type="button"
+          autoFocus
+          onClick={unlockAlertAudio}
+          className="flex h-[58px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[18px] bg-accent text-[18px] font-bold text-white"
+        >
+          <BellIcon size={22} />
+          เปิดแจ้งเตือน
+        </button>
+        {!canVibrate() && <p className="text-[13px] text-ink-2">iPhone ไม่รองรับการสั่น จะใช้เสียงและจอเขียวแทน</p>}
+      </div>
+    </div>
   );
 }

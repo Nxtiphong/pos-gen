@@ -104,10 +104,12 @@ function BillView({ bill, ahead }: { bill: Bill; ahead: number }) {
               <path d="M5 12l5 5 9-10" />
             </svg>
           </span>
-          <h1 role="status" className="text-[24px] leading-[1.3] font-bold">
-            รับของแล้ว · ขอบคุณที่อุดหนุน
-          </h1>
-          <span className="text-[15px] text-ink-2">ออเดอร์ {bill.orderNo}</span>
+          <div role="status" className="flex flex-col gap-1">
+            <h1 className="text-[24px] leading-[1.3] font-bold">
+              รับของแล้ว · <span className="whitespace-nowrap">ขอบคุณที่อุดหนุน</span>
+            </h1>
+            <span className="text-[15px] text-ink-2">ออเดอร์ {bill.orderNo}</span>
+          </div>
         </section>
       ) : (
         <section className="flex flex-col items-center gap-2.5 rounded-[28px] bg-card p-6 text-center">

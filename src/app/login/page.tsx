@@ -1,12 +1,12 @@
 "use client";
 
 import { FirebaseError } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { getStaffAuth } from "@/lib/firebase/auth";
 import { SHOP_NAME } from "@/lib/shop";
-import { useStaffSession } from "@/lib/staff-session";
+import { isStaffUser, useStaffSession } from "@/lib/staff-session";
 
 const STAFF_EMAIL = "staff@pos.local";
 
@@ -43,7 +43,13 @@ export default function LoginPage() {
     setPending(true);
     setError(null);
     try {
-      await signInWithEmailAndPassword(getStaffAuth(), email.trim(), password);
+      const auth = getStaffAuth();
+      const { user } = await signInWithEmailAndPassword(auth, email.trim(), password);
+      if (!(await isStaffUser(user))) {
+        await signOut(auth);
+        setError("บัญชีนี้ไม่มีสิทธิ์พนักงาน");
+        setPending(false);
+      }
     } catch (e) {
       setError(signInError(e));
       setPending(false);

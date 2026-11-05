@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "emulators": "PATH=/opt/homebrew/opt/openjdk/bin:$PATH firebase emulators:start --only auth,firestore,storage --project demo-pos-gen",
     "seed": "tsx scripts/seed.ts",
-    "test:rules": "PATH=/opt/homebrew/opt/openjdk/bin:$PATH firebase emulators:exec --only firestore --project demo-pos-gen \"vitest run --config vitest.rules.config.ts\""
+    "test:rules": "PATH=/opt/homebrew/opt/openjdk/bin:$PATH firebase emulators:exec --only firestore,storage --project demo-pos-gen \"vitest run --config vitest.rules.config.ts\""
   },
   "dependencies": {
     "firebase": "^13.2.0",

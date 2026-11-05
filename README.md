@@ -25,7 +25,7 @@ Local runs use the Firebase Emulator Suite with the project id `demo-pos-gen`. T
    npm run emulators
    ```
 
-3. In another terminal, seed the catalog and the staff user `staff@pos.local` (password `SEED_STAFF_PASSWORD`, default `changeme123` on the emulators only):
+3. In another terminal, seed the catalog and the staff user `staff@pos.local` with the custom claim `staff: true` (password `SEED_STAFF_PASSWORD`, default `changeme123` on the emulators only). Rerunning it is safe:
 
    ```bash
    npm run seed
@@ -45,10 +45,10 @@ Emulator data is in memory and is lost when the emulators stop. Rerun `npm run s
 npm run typecheck
 npm run lint
 npm test            # domain unit tests
-npm run test:rules  # firestore.rules against the emulator
+npm run test:rules  # firestore.rules, storage.rules and createOrder against the emulators
 npm run build
 ```
 
 ## Production
 
-Copy `.env.example` into the Vercel project settings and fill in the web app config and a service account. Leave `NEXT_PUBLIC_USE_EMULATORS`, `FIRESTORE_EMULATOR_HOST` and `FIREBASE_AUTH_EMULATOR_HOST` unset. In the Firebase console, turn off sign-up (Authentication > Settings > User actions > Enable create) after creating the staff account: the rules treat any signed-in user as staff.
+Copy `.env.example` into the Vercel project settings and fill in the web app config and a service account. Leave `NEXT_PUBLIC_USE_EMULATORS`, `FIRESTORE_EMULATOR_HOST` and `FIREBASE_AUTH_EMULATOR_HOST` unset. In the Firebase console, turn off sign-up (Authentication > Settings > User actions > Enable create) after creating the staff account. The rules only grant staff access to accounts with the `staff: true` custom claim that `npm run seed` sets, so this is defense in depth.

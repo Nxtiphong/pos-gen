@@ -4,7 +4,7 @@ Next.js 15 App Router on Vercel. Firestore is the database and the realtime chan
 
 ## Actors
 
-- **Staff iPad.** Signs in with Firebase Auth (email/password, one account). Reads and writes Firestore directly with the client SDK. The rules treat any signed-in user as staff, so public sign-up must be turned off in the Firebase console (Authentication > Settings > User actions) once the staff account exists. Otherwise anyone holding the public web API key could create an account and get staff access.
+- **Staff iPad.** Signs in with Firebase Auth (email/password, one account). Reads and writes Firestore and Storage directly with the client SDK. Staff means the custom claim `staff: true` on the ID token, which only `npm run seed` sets (through firebase-admin). `firestore.rules` and `storage.rules` both define `isStaff()` as `request.auth != null && request.auth.token.staff == true`, so an account anyone creates with the public web API key gets customer access and nothing more. After sign-in the client reads the token claims and forces one token refresh if `staff` is missing, so a session that predates the claim picks it up; an account still without the claim is signed out. Turning off public sign-up in the Firebase console is defense in depth on top of the claim, not the guard itself.
 - **Customer phone.** Not signed in. Opens `/b/{publicToken}` from the QR. Subscribes to `bills/{publicToken}` and `queues/{businessDate}` with `onSnapshot`. Never reads `orders`.
 - **Route handler `POST /api/bills/{token}/scan`.** Runs firebase-admin on the Node runtime. Sets `scannedAt` on the bill and its order only when it is still absent, so repeated opens are harmless.
 
@@ -13,7 +13,7 @@ Next.js 15 App Router on Vercel. Firestore is the database and the realtime chan
 | Path | Fields | Who reads | Who writes |
 |---|---|---|---|
 | `categories/{id}` | name, sortOrder | staff, customer never | staff |
-| `products/{id}` | name, price (integer baht), unit, categoryId, imageUrl?, isAvailable, sortOrder | staff | staff |
+| `products/{id}` | name, price (integer baht), unit, categoryId, imageUrl? (Storage download URL of `products/{id}/{filename}`), isAvailable, sortOrder | staff | staff |
 | `counters/{businessDate}` | next (int) | staff | staff, in the create-order transaction |
 | `orders/{id}` | orderNo, businessDate, publicToken, lines[], itemCount, total, cashReceived, change, status, createdAt, scannedAt?, notifiedAt?, notifyCount, pickedUpAt? | staff | staff; admin for scannedAt |
 | `bills/{publicToken}` | orderId, orderNo, businessDate, lines[], total, cashReceived, change, status, createdAt, notifiedAt?, notifyCount, scannedAt? | anyone by exact id (`get`, never `list`) | staff; admin for scannedAt |

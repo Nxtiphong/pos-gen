@@ -35,7 +35,9 @@ beforeEach(async () => {
 });
 
 const anon = () => env.unauthenticatedContext().firestore();
-const staff = () => env.authenticatedContext("staff-uid", { email: "staff@pos.local" }).firestore();
+const staff = () => env.authenticatedContext("staff-uid", { email: "staff@pos.local", staff: true }).firestore();
+// Anyone can create an account with the public web API key; without the staff claim it must get nothing.
+const stranger = () => env.authenticatedContext("stranger-uid", { email: "someone@example.com" }).firestore();
 
 describe("anonymous customer", () => {
   it("can get a bill by its token", async () => {
@@ -97,5 +99,42 @@ describe("signed-in staff", () => {
 
   it("cannot touch collections the architecture does not name", async () => {
     await assertFails(setDoc(doc(staff(), "anything/x"), { a: 1 }));
+  });
+});
+
+describe("signed-in user without the staff claim", () => {
+  it("cannot read orders", async () => {
+    const db = stranger();
+    await assertFails(getDoc(doc(db, "orders/o1")));
+    await assertFails(getDocs(collection(db, "orders")));
+  });
+
+  it("cannot write orders, products or bills", async () => {
+    const db = stranger();
+    await assertFails(setDoc(doc(db, "orders/o2"), { orderNo: "A002" }));
+    await assertFails(updateDoc(doc(db, "orders/o1"), { status: "picked_up" }));
+    await assertFails(setDoc(doc(db, "products/p2"), { name: "ไส้อั่ว", price: 15 }));
+    await assertFails(updateDoc(doc(db, "products/p1"), { isAvailable: false }));
+    await assertFails(setDoc(doc(db, "bills/tok_new_new_new_new_new_new"), { orderNo: "A999" }));
+    await assertFails(updateDoc(doc(db, "bills/tok_aaaaaaaaaaaaaaaaaaaaaa"), { status: "notified" }));
+  });
+
+  it("cannot read the counter, catalog or list bills", async () => {
+    const db = stranger();
+    await assertFails(getDoc(doc(db, "counters/2026-11-05")));
+    await assertFails(getDocs(collection(db, "products")));
+    await assertFails(getDocs(collection(db, "categories")));
+    await assertFails(getDocs(collection(db, "bills")));
+  });
+
+  it("can still get a bill and the queue by id, like any customer", async () => {
+    const db = stranger();
+    await assertSucceeds(getDoc(doc(db, "bills/tok_aaaaaaaaaaaaaaaaaaaaaa")));
+    await assertSucceeds(getDoc(doc(db, "queues/2026-11-05")));
+  });
+
+  it("a staff claim other than true is not staff", async () => {
+    const db = env.authenticatedContext("odd-uid", { staff: "true" }).firestore();
+    await assertFails(getDoc(doc(db, "orders/o1")));
   });
 });

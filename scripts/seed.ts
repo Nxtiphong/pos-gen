@@ -23,11 +23,11 @@ async function main() {
 
   const auth = adminAuth();
   const existing = await auth.getUserByEmail(STAFF_EMAIL).catch(() => null);
-  if (existing) await auth.updateUser(existing.uid, { password });
-  else await auth.createUser({ email: STAFF_EMAIL, password });
+  const staff = existing ? await auth.updateUser(existing.uid, { password }) : await auth.createUser({ email: STAFF_EMAIL, password });
+  await auth.setCustomUserClaims(staff.uid, { ...staff.customClaims, staff: true });
 
   const target = onEmulators ? `emulators (${process.env.FIRESTORE_EMULATOR_HOST})` : `project ${process.env.FIREBASE_PROJECT_ID}`;
-  console.log(`Seeded ${SEED_CATEGORIES.length} categories, ${SEED_PRODUCTS.length} products and ${STAFF_EMAIL} into ${target}.`);
+  console.log(`Seeded ${SEED_CATEGORIES.length} categories, ${SEED_PRODUCTS.length} products and ${STAFF_EMAIL} (claim staff: true) into ${target}.`);
 }
 
 main().catch((error) => {

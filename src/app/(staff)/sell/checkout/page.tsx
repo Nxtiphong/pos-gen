@@ -8,6 +8,7 @@ import { pressKey, receivedAmount, settle, type CashKey } from "@/domain/cash";
 import { baht, formatBaht } from "@/domain/money";
 import { useCart } from "@/lib/cart-context";
 import { useCatalog } from "@/lib/catalog";
+import { useNextOrderNo } from "@/lib/orders";
 import { useCompleteSale } from "@/lib/sale";
 
 const KEYS: readonly CashKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0", "back"];
@@ -16,7 +17,8 @@ export default function CheckoutPage() {
   const { products } = useCatalog();
   const { cart } = useCart();
   const router = useRouter();
-  const completeSale = useCompleteSale();
+  const { status, complete } = useCompleteSale();
+  const nextOrderNo = useNextOrderNo();
   const [entry, setEntry] = useState("");
 
   const lines = cartLines(cart, products);
@@ -29,8 +31,8 @@ export default function CheckoutPage() {
   ];
 
   useEffect(() => {
-    if (lines.length === 0) router.replace("/sell");
-  }, [lines.length, router]);
+    if (lines.length === 0 && status !== "done") router.replace("/sell");
+  }, [lines.length, status, router]);
 
   if (lines.length === 0) return null;
 
@@ -47,6 +49,7 @@ export default function CheckoutPage() {
           แก้รายการ
         </Link>
         <h1 className="text-[28px] font-bold">คิดเงิน</h1>
+        {nextOrderNo && <span className="text-[18px] text-ink-2">ออเดอร์ #{nextOrderNo}</span>}
       </header>
 
       <div className="flex min-h-0 flex-1 gap-5">
@@ -157,11 +160,18 @@ export default function CheckoutPage() {
             ))}
           </div>
 
+          {status === "failed" && (
+            <p role="alert" className="mt-auto rounded-[14px] bg-accent-soft px-4 py-3 text-[16px] font-semibold text-accent-deep">
+              บันทึกออเดอร์ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วกดชำระเสร็จอีกครั้ง
+            </p>
+          )}
           {settlement.kind === "enough" ? (
             <button
               type="button"
+              disabled={status === "saving"}
+              aria-busy={status === "saving"}
               onClick={() =>
-                completeSale({
+                complete({
                   lines: lines.map(({ product, qty }) => ({
                     productId: product.id,
                     name: product.name,
@@ -173,12 +183,20 @@ export default function CheckoutPage() {
                   change: settlement.change,
                 })
               }
-              className="mt-auto flex h-[68px] cursor-pointer items-center justify-center gap-2.5 rounded-[18px] bg-accent text-[22px] font-bold text-white"
+              className={`flex h-[68px] cursor-pointer items-center justify-center gap-2.5 rounded-[18px] bg-accent text-[22px] font-bold text-white disabled:cursor-default disabled:opacity-70 ${
+                status === "failed" ? "" : "mt-auto"
+              }`}
             >
-              <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12l5 5 9-10" />
-              </svg>
-              ชำระเสร็จ · ทอน {formatBaht(settlement.change)}
+              {status === "saving" ? (
+                "กำลังบันทึกออเดอร์…"
+              ) : (
+                <>
+                  <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12l5 5 9-10" />
+                  </svg>
+                  ชำระเสร็จ · ทอน {formatBaht(settlement.change)}
+                </>
+              )}
             </button>
           ) : (
             <button type="button" disabled className="mt-auto h-[68px] rounded-[18px] bg-line text-[22px] font-bold text-ink-2">

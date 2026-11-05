@@ -1,30 +1,47 @@
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import type { ProductId } from "@/domain/catalog";
+import { useCallback, useRef, useState } from "react";
 import type { Baht } from "@/domain/money";
+import type { OrderLine } from "@/domain/order";
 import { useCart } from "./cart-context";
-
-export type SaleLine = {
-  productId: ProductId;
-  name: string;
-  price: Baht;
-  qty: number;
-};
+import { createOrder } from "./orders";
 
 export type Sale = {
-  lines: readonly SaleLine[];
+  lines: readonly OrderLine[];
   total: Baht;
   cashReceived: Baht;
   change: Baht;
 };
 
-export type CompleteSale = (sale: Sale) => void;
+export type SaleStatus = "idle" | "saving" | "failed" | "done";
+
+export type CompleteSale = {
+  status: SaleStatus;
+  complete: (sale: Sale) => void;
+};
 
 export function useCompleteSale(): CompleteSale {
   const { dispatch } = useCart();
   const router = useRouter();
-  return useCallback(() => {
-    router.replace("/sell");
-    dispatch({ type: "clear" });
-  }, [dispatch, router]);
+  const [status, setStatus] = useState<SaleStatus>("idle");
+  const inFlight = useRef(false);
+
+  const complete = useCallback(
+    async (sale: Sale) => {
+      if (inFlight.current) return;
+      inFlight.current = true;
+      setStatus("saving");
+      try {
+        const orderId = await createOrder(sale);
+        setStatus("done");
+        router.replace(`/sell/paid/${orderId}`);
+        dispatch({ type: "clear" });
+      } catch {
+        inFlight.current = false;
+        setStatus("failed");
+      }
+    },
+    [dispatch, router],
+  );
+
+  return { status, complete };
 }

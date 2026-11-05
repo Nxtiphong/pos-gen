@@ -8,12 +8,14 @@ import { formatBaht } from "@/domain/money";
 import { useCart } from "@/lib/cart-context";
 import { useCatalog } from "@/lib/catalog";
 import { StaffNav } from "@/components/staff-nav";
+import { useNextOrderNo } from "@/lib/orders";
 
 type Filter = CategoryId | "all";
 
 export function SellScreen({ today }: { today: string }) {
   const { categories, products } = useCatalog();
   const { cart, dispatch } = useCart();
+  const nextOrderNo = useNextOrderNo();
   const [filter, setFilter] = useState<Filter>("all");
 
   const chips: { id: Filter; name: string }[] = [{ id: "all", name: "ทั้งหมด" }, ...categories];
@@ -80,7 +82,11 @@ export function SellScreen({ today }: { today: string }) {
       </main>
 
       <aside aria-label="บิลปัจจุบัน" className="flex w-[380px] shrink-0 flex-col border-l border-line bg-card">
-        <div className="flex min-h-[105px] items-center justify-end gap-3 px-6 pt-6 pb-4">
+        <div className="flex items-center justify-between gap-3 px-6 pt-6 pb-4">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[14px] text-ink-2">ออเดอร์ถัดไป</span>
+            <span className="text-[24px] font-bold">{nextOrderNo ? `#${nextOrderNo}` : "\u00a0"}</span>
+          </div>
           {lines.length > 0 && (
             <button
               type="button"

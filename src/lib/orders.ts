@@ -12,6 +12,7 @@ import {
   Timestamp,
   where,
   type DocumentData,
+  type Firestore,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { baht } from "@/domain/money";
@@ -31,15 +32,20 @@ import {
 import { getDb } from "./firebase/client";
 import type { Sale } from "./sale";
 
-export async function createOrder(sale: Sale, now: Date = new Date()): Promise<OrderId> {
-  const db = getDb();
+export function newOrderId(db: Firestore = getDb()): OrderId {
+  return doc(collection(db, "orders")).id as OrderId;
+}
+
+// The caller keeps orderId across retries of one checkout, so a retry after a commit whose response was lost
+// finds the order and returns it instead of taking a second order number.
+export async function createOrder(db: Firestore, orderId: OrderId, sale: Sale, now: Date = new Date()): Promise<OrderId> {
   const date = businessDate(now);
   const counterRef = doc(db, "counters", date);
-  const orderRef = doc(collection(db, "orders"));
-  const orderId = orderRef.id as OrderId;
+  const orderRef = doc(db, "orders", orderId);
   const publicToken = newPublicToken();
 
   await runTransaction(db, async (tx) => {
+    if ((await tx.get(orderRef)).exists()) return;
     const counter = await tx.get(counterRef);
     const n: number = counter.get("next") ?? FIRST_ORDER_NUMBER;
     const orderNo = formatOrderNo(n);
@@ -64,15 +70,16 @@ export async function createOrder(sale: Sale, now: Date = new Date()): Promise<O
 }
 
 export function useNextOrderNo(): OrderNo | null {
+  const today = useToday();
   const [next, setNext] = useState<OrderNo | null>(null);
   useEffect(
     () =>
       onSnapshot(
-        doc(getDb(), "counters", businessDate(new Date())),
+        doc(getDb(), "counters", today),
         (snap) => setNext(formatOrderNo(snap.get("next") ?? FIRST_ORDER_NUMBER)),
         () => setNext(null),
       ),
-    [],
+    [today],
   );
   return next;
 }

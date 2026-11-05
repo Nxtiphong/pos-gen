@@ -23,6 +23,8 @@ Next.js 15 App Router on Vercel. Firestore is the database and the realtime chan
 
 `status` is `preparing | notified | picked_up`. Transitions: `preparing → notified` (notify), `notified → notified` (re-notify, notifyCount + 1), `notified → picked_up`. Each transition writes the order, its bill, and the queue doc in one batch.
 
+Creating an order is one transaction: read `orders/{id}`, read the counter, then write the counter, the order, the bill and the queue. The checkout generates the order id once per attempt and reuses it when staff press ชำระเสร็จ again after an error, so if a commit succeeded but its response was lost, the retry finds the order and returns it without taking another number.
+
 `businessDate` is `YYYY-MM-DD` in Asia/Bangkok. `orderNo` is `A` + counter zero-padded to 3 digits. The counter doc per date makes numbering restart daily.
 
 `publicToken` is 22+ chars of URL-safe randomness from `crypto.getRandomValues`. The bill URL never contains the order number.

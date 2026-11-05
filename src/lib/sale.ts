@@ -1,9 +1,10 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import type { Baht } from "@/domain/money";
-import type { OrderLine } from "@/domain/order";
+import type { OrderId, OrderLine } from "@/domain/order";
 import { useCart } from "./cart-context";
-import { createOrder } from "./orders";
+import { getDb } from "./firebase/client";
+import { createOrder, newOrderId } from "./orders";
 
 export type Sale = {
   lines: readonly OrderLine[];
@@ -24,6 +25,7 @@ export function useCompleteSale(): CompleteSale {
   const router = useRouter();
   const [status, setStatus] = useState<SaleStatus>("idle");
   const inFlight = useRef(false);
+  const attempt = useRef<OrderId | null>(null);
 
   const complete = useCallback(
     async (sale: Sale) => {
@@ -31,7 +33,8 @@ export function useCompleteSale(): CompleteSale {
       inFlight.current = true;
       setStatus("saving");
       try {
-        const orderId = await createOrder(sale);
+        attempt.current ??= newOrderId();
+        const orderId = await createOrder(getDb(), attempt.current, sale);
         setStatus("done");
         router.replace(`/sell/paid/${orderId}`);
         dispatch({ type: "clear" });

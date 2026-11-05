@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>เพิ่มสินค้า</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+input:focus{outline:3px solid #F4B28C;outline-offset:1px}
+</style>
+</helmet>
+<div style="position: relative; width: 1194px; height: 834px; display: flex; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <div aria-hidden="true" style="width: 88px; flex-shrink: 0; background: #FFFFFF; border-right: 1px solid #E3E5E0"></div>
+  <div aria-hidden="true" style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <span style="font-size: 28px; font-weight: 700">สินค้า</span>
+      <span style="width: 150px; height: 52px; border-radius: 16px; background: #C4410C"></span>
+    </div>
+    <div style="flex: 1; background: #FFFFFF; border-radius: 22px"></div>
+  </div>
+
+  <div style="position: absolute; inset: 0; background: rgba(28,29,26,0.5); display: flex; align-items: center; justify-content: center">
+    <form role="dialog" aria-modal="true" aria-labelledby="add-title" style="width: 560px; background: #FFFFFF; border-radius: 28px; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 24px 64px rgba(28,29,26,0.3)">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <h1 id="add-title" style="margin: 0; font-size: 26px; font-weight: 700">เพิ่มสินค้า</h1>
+        <a href="Products.dc.html" aria-label="ปิด" style="width: 44px; height: 44px; border-radius: 12px; background: #F3F4F1; color: #1C1D1A; display: flex; align-items: center; justify-content: center">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="p-name" style="font-size: 15px; font-weight: 600">ชื่อสินค้า</label>
+        <input id="p-name" type="text" defaultValue="ไส้อั่ว" placeholder="เช่น ไส้อั่ว" style="height: 56px; padding: 0 16px; border-radius: 14px; border: 1px solid #C9CCC5; background: #FFFFFF; color: #1C1D1A; font-size: 18px; box-sizing: border-box">
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="p-price" style="font-size: 15px; font-weight: 600">ราคา (บาท)</label>
+          <input id="p-price" type="text" inputmode="numeric" defaultValue="15" placeholder="0" style="height: 56px; padding: 0 16px; border-radius: 14px; border: 1px solid #C9CCC5; background: #FFFFFF; color: #1C1D1A; font-size: 18px; font-weight: 600; box-sizing: border-box">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <label for="p-unit" style="font-size: 15px; font-weight: 600">หน่วย</label>
+          <input id="p-unit" type="text" defaultValue="ไม้" placeholder="เช่น ไม้ / ห่อ / แก้ว" style="height: 56px; padding: 0 16px; border-radius: 14px; border: 1px solid #C9CCC5; background: #FFFFFF; color: #1C1D1A; font-size: 18px; box-sizing: border-box">
+        </div>
+      </div>
+
+      <fieldset style="margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 8px">
+        <legend style="padding: 0; margin-bottom: 8px; font-size: 15px; font-weight: 600">หมวด</legend>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{cats}}" as="c" hint-placeholder-count="4">
+            <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 16px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+          </sc-for>
+          <button type="button" style="height: 44px; padding: 0 16px; border-radius: 999px; border: 1px dashed #A8ADA9; background: #FFFFFF; color: #4D514E; font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"></path></svg>
+            หมวดใหม่
+          </button>
+        </div>
+      </fieldset>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 15px; font-weight: 600">รูป <span style="font-weight: 400; color: #5F6360">(ไม่บังคับ)</span></span>
+        <button type="button" style="height: 88px; border-radius: 16px; border: 1.5px dashed #A8ADA9; background: #FAFAF8; color: #4D514E; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer">
+          <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4V8z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+          ถ่ายรูป หรือเลือกจากคลังภาพ
+        </button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 4px">
+        <a href="Products.dc.html" style="height: 60px; border-radius: 16px; border: 1px solid #E3E5E0; background: #FFFFFF; color: #1C1D1A; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600">ยกเลิก</a>
+        <a href="Products.dc.html" style="height: 60px; border-radius: 16px; background: #C4410C; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 700">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+          บันทึกสินค้า
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const cat = s.cat || 'grill';
+    const cats = [
+      { id: 'grill', label: 'ปิ้งย่าง' },
+      { id: 'fried', label: 'ของทอด' },
+      { id: 'rice', label: 'ข้าว' },
+      { id: 'drink', label: 'เครื่องดื่ม' }
+    ].map((c) => {
+      const on = c.id === cat;
+      return Object.assign({}, c, {
+        pressed: on ? 'true' : 'false',
+        bg: on ? '#1C1D1A' : '#FFFFFF',
+        fg: on ? '#FFFFFF' : '#1C1D1A',
+        border: on ? '#1C1D1A' : '#E3E5E0',
+        pick: () => this.setState({ cat: c.id })
+      });
+    });
+    return { cats: cats };
+  }
+}
+</script>
+</body>
+</html>

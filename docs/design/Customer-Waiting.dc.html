@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>บิลของคุณ · รอของ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+@keyframes waitpulse{0%{box-shadow:0 0 0 0 rgba(196,65,12,0.45)}70%{box-shadow:0 0 0 10px rgba(196,65,12,0)}100%{box-shadow:0 0 0 0 rgba(196,65,12,0)}}
+.wait-dot{animation:waitpulse 1.6s ease-out infinite}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 4px 0">
+    <span style="font-size: 17px; font-weight: 700">[ชื่อร้าน]</span>
+    <span style="font-size: 14px; color: #5F6360">บิลของคุณ</span>
+  </header>
+
+  <section style="background: #FFFFFF; border-radius: 28px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+    <span style="font-size: 15px; color: #5F6360">หมายเลขออเดอร์</span>
+    <span style="font-size: 92px; font-weight: 700; line-height: 1; letter-spacing: -1px">A023</span>
+    <span role="status" style="height: 36px; padding: 0 14px; border-radius: 999px; background: #FFF1E8; color: #8A2C07; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px">
+      <span class="wait-dot" aria-hidden="true" style="width: 10px; height: 10px; border-radius: 999px; background: #C4410C"></span>
+      กำลังเตรียม · คิวก่อนหน้า 3 ออเดอร์
+    </span>
+    <p style="margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: #5F6360">เปิดหน้านี้ค้างไว้ เมื่อของพร้อม<br>มือถือจะเด้งแจ้งเตือนพร้อมเสียง</p>
+  </section>
+
+  <sc-if value="{{off}}" hint-placeholder-val="{{true}}">
+    <button type="button" onClick="{{enable}}" style="height: 58px; border-radius: 18px; border: none; background: #1C1D1A; color: #FFFFFF; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z"></path><path d="M10 21h4"></path></svg>
+      เปิดเสียงแจ้งเตือน
+    </button>
+  </sc-if>
+  <sc-if value="{{on}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="height: 58px; border-radius: 18px; background: #E8F4EC; color: #135F3B; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+      เปิดแจ้งเตือนแล้ว · เสียงและสั่น
+    </div>
+  </sc-if>
+
+  <section aria-label="รายละเอียดบิล" style="background: #FFFFFF; border-radius: 24px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px">
+      <li style="display: flex; justify-content: space-between; gap: 12px; font-size: 16px"><span>หมูปิ้ง <span style="color: #5F6360">× 4</span></span><span>฿40</span></li>
+      <li style="display: flex; justify-content: space-between; gap: 12px; font-size: 16px"><span>ข้าวเหนียว <span style="color: #5F6360">× 2</span></span><span>฿20</span></li>
+      <li style="display: flex; justify-content: space-between; gap: 12px; font-size: 16px"><span>ชาเย็น <span style="color: #5F6360">× 1</span></span><span>฿25</span></li>
+    </ul>
+    <div style="height: 1px; background: #E3E5E0"></div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span style="font-size: 16px; font-weight: 600">รวม</span>
+      <span style="font-size: 26px; font-weight: 700">฿85</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 14px; color: #5F6360"><span>รับเงินสด</span><span>฿100</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 14px; color: #5F6360"><span>เงินทอน</span><span>฿15</span></div>
+    <div style="height: 1px; background: #E3E5E0"></div>
+    <span style="font-size: 13px; color: #5F6360; text-align: center">5 พ.ย. 2569 · 10:42</span>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.state || {};
+    const on = !!s.on;
+    return { on: on, off: !on, enable: () => this.setState({ on: true }) };
+  }
+}
+</script>
+</body>
+</html>

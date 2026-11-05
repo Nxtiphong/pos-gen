@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>คิวออเดอร์</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+</style>
+</helmet>
+<div style="position: relative; width: 1194px; height: 834px; display: flex; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <nav aria-label="เมนูหลัก" style="width: 88px; flex-shrink: 0; background: #FFFFFF; border-right: 1px solid #E3E5E0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; box-sizing: border-box">
+    <div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #1C1D1A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-bottom: 16px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9"></path><path d="M4 9h16"></path><path d="M5 9v11h14V9"></path><path d="M10 20v-5h4v5"></path></svg>
+    </div>
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+      ขาย
+    </a>
+    <a href="Orders.dc.html" aria-current="page" style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; background: #FFF1E8; color: #B33A0A; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"></path><path d="M9 8h6M9 12h6"></path></svg>
+      ออเดอร์
+      <span style="position: absolute; top: 4px; right: 10px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 999px; background: #C4410C; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{prepCount}}</span>
+    </a>
+    <a href="Summary.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"></path><path d="M7 16v-5M12 16V6M17 16v-8"></path></svg>
+      สรุปยอด
+    </a>
+    <a href="Products.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"></path><path d="M3 7v10l9 4 9-4V7"></path><path d="M12 11v10"></path></svg>
+      สินค้า
+    </a>
+  </nav>
+
+  <main style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px; box-sizing: border-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700">คิวออเดอร์</h1>
+      <div role="tablist" aria-label="สถานะออเดอร์" style="display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: #E6E8E3">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+          <button type="button" role="tab" aria-selected="{{t.selected}}" onClick="{{t.pick}}" style="height: 44px; padding: 0 18px; border-radius: 12px; border: none; background: {{t.bg}}; color: {{t.fg}}; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer">
+            {{t.label}}
+            <span style="min-width: 24px; height: 24px; padding: 0 6px; box-sizing: border-box; border-radius: 999px; background: {{t.countBg}}; color: {{t.countFg}}; font-size: 13px; display: flex; align-items: center; justify-content: center">{{t.count}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-content: start">
+      <sc-for list="{{orders}}" as="o" hint-placeholder-count="4">
+        <article style="background: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; border: 2px solid {{o.ring}}">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
+            <span style="font-size: 34px; font-weight: 700; line-height: 1">{{o.id}}</span>
+            <span style="font-size: 14px; color: #5F6360">{{o.time}}</span>
+          </div>
+          <sc-if value="{{o.scanned}}" hint-placeholder-val="{{true}}">
+            <span style="align-self: flex-start; height: 28px; padding: 0 10px; border-radius: 999px; background: #E8F4EC; color: #135F3B; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"></rect></svg>
+              ลูกค้าสแกนบิลแล้ว
+            </span>
+          </sc-if>
+          <sc-if value="{{o.notScanned}}" hint-placeholder-val="{{false}}">
+            <span style="align-self: flex-start; height: 28px; padding: 0 10px; border-radius: 999px; background: #FFF1E8; color: #8A2C07; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5v.5"></path><circle cx="12" cy="12" r="9"></circle></svg>
+              ยังไม่สแกน · เรียกเลขด้วยเสียง
+            </span>
+          </sc-if>
+          <p style="margin: 0; font-size: 16px; line-height: 1.5; min-height: 48px">{{o.items}}</p>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; color: #5F6360">
+            <span>{{o.count}}</span>
+            <span style="font-size: 20px; font-weight: 700; color: #1C1D1A">{{o.total}}</span>
+          </div>
+
+          <sc-if value="{{o.isPrep}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{o.notify}}" style="height: 56px; border-radius: 16px; border: none; background: #C4410C; color: #FFFFFF; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer">
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z"></path><path d="M10 21h4"></path></svg>
+              แจ้งรับของ
+            </button>
+          </sc-if>
+          <sc-if value="{{o.isNotified}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <span style="font-size: 14px; color: #135F3B; font-weight: 600">แจ้งลูกค้าแล้ว · {{o.at}}</span>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+                <button type="button" onClick="{{o.notify}}" style="height: 56px; border-radius: 16px; border: 1px solid #E3E5E0; background: #FFFFFF; color: #1C1D1A; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+                  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z"></path><path d="M10 21h4"></path></svg>
+                  แจ้งซ้ำ
+                </button>
+                <button type="button" onClick="{{o.finish}}" style="height: 56px; border-radius: 16px; border: none; background: #1C1D1A; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">รับของแล้ว</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{o.isDone}}" hint-placeholder-val="{{false}}">
+            <span style="height: 44px; border-radius: 14px; background: #F3F4F1; color: #5F6360; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center">ลูกค้ารับแล้ว · {{o.at}}</span>
+          </sc-if>
+        </article>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{isEmpty}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 40px 0 0; text-align: center; font-size: 18px; color: #5F6360">ไม่มีออเดอร์ในสถานะนี้</p>
+    </sc-if>
+  </main>
+
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); margin-left: 44px; display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 20px; border-radius: 18px; background: #1C1D1A; color: #FFFFFF; box-shadow: 0 12px 32px rgba(28,29,26,0.25); white-space: nowrap">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+      <span style="font-size: 16px; font-weight: 600">ส่งแจ้งเตือนไปที่มือถือลูกค้า {{toastId}} แล้ว</span>
+      <a href="Customer-Ready.dc.html" style="height: 40px; padding: 0 14px; border-radius: 12px; background: #FFFFFF; color: #1C1D1A; text-decoration: none; display: flex; align-items: center; font-size: 14px; font-weight: 600">ดูหน้าจอลูกค้า</a>
+      <button type="button" onClick="{{closeToast}}" aria-label="ปิด" style="width: 40px; height: 40px; border-radius: 12px; border: none; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  base() {
+    return [
+      { id: 'A023', time: '10:42', items: 'หมูปิ้ง × 4 · ข้าวเหนียว × 2 · ชาเย็น × 1', n: 7, total: 85, scanned: true, s: 'prep' },
+      { id: 'A022', time: '10:40', items: 'ไก่ทอด × 2 · ข้าวเหนียว × 1', n: 3, total: 50, scanned: true, s: 'prep' },
+      { id: 'A021', time: '10:38', items: 'ข้าวเหนียวหมูทอด × 1 · โอเลี้ยง × 1', n: 2, total: 55, scanned: false, s: 'prep' },
+      { id: 'A020', time: '10:35', items: 'ลูกชิ้นปิ้ง × 5 · น้ำเปล่า × 1', n: 6, total: 60, scanned: true, s: 'prep' },
+      { id: 'A019', time: '10:31', items: 'ไก่ปิ้ง × 2 · ข้าวเหนียว × 2', n: 4, total: 70, scanned: true, s: 'notified', at: '10:36' },
+      { id: 'A018', time: '10:27', items: 'หมูปิ้ง × 6 · ข้าวเหนียว × 3', n: 9, total: 90, scanned: true, s: 'done', at: '10:33' },
+      { id: 'A017', time: '10:22', items: 'ชาเย็น × 2 · หนังไก่ทอด × 1', n: 3, total: 70, scanned: false, s: 'done', at: '10:26' },
+      { id: 'A016', time: '10:18', items: 'ไส้กรอกอีสาน × 4 · ข้าวเหนียว × 1', n: 5, total: 50, scanned: true, s: 'done', at: '10:24' }
+    ];
+  }
+  start() { return { tab: 'prep', over: {}, toast: null }; }
+  st() { return Object.assign({}, this.start(), this.state || {}); }
+  setOver(id, v, toast) {
+    const over = Object.assign({}, this.st().over);
+    over[id] = v;
+    this.setState({ over: over, toast: toast });
+  }
+  renderVals() {
+    const s = this.st();
+    const money = (n) => '฿' + n.toLocaleString('en-US');
+    const all = this.base().map((o) => Object.assign({}, o, s.over[o.id] || {}));
+    const counts = { prep: 0, notified: 0, done: 0 };
+    all.forEach((o) => { counts[o.s] += 1; });
+    const tabs = [
+      { id: 'prep', label: 'กำลังทำ' },
+      { id: 'notified', label: 'แจ้งแล้ว' },
+      { id: 'done', label: 'รับแล้ว' }
+    ].map((t) => {
+      const on = s.tab === t.id;
+      return Object.assign({}, t, {
+        count: counts[t.id],
+        selected: on ? 'true' : 'false',
+        bg: on ? '#FFFFFF' : 'transparent',
+        fg: on ? '#1C1D1A' : '#4D514E',
+        countBg: on ? '#1C1D1A' : '#D5D8D2',
+        countFg: on ? '#FFFFFF' : '#1C1D1A',
+        pick: () => this.setState({ tab: t.id })
+      });
+    });
+    const orders = all.filter((o) => o.s === s.tab).map((o) => Object.assign({}, o, {
+      total: money(o.total),
+      count: o.n + ' ชิ้น',
+      notScanned: !o.scanned,
+      isPrep: o.s === 'prep',
+      isNotified: o.s === 'notified',
+      isDone: o.s === 'done',
+      ring: s.toast === o.id ? '#157347' : '#FFFFFF',
+      notify: () => this.setOver(o.id, { s: 'notified', at: '10:48' }, o.id),
+      finish: () => this.setOver(o.id, { s: 'done', at: '10:50' }, null)
+    }));
+    return {
+      tabs: tabs,
+      orders: orders,
+      isEmpty: orders.length === 0,
+      prepCount: counts.prep,
+      hasToast: !!s.toast,
+      toastId: s.toast || '',
+      closeToast: () => this.setState({ toast: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

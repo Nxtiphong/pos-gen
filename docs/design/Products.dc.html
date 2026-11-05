@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>สินค้า</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; display: flex; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <nav aria-label="เมนูหลัก" style="width: 88px; flex-shrink: 0; background: #FFFFFF; border-right: 1px solid #E3E5E0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; box-sizing: border-box">
+    <div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #1C1D1A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-bottom: 16px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9"></path><path d="M4 9h16"></path><path d="M5 9v11h14V9"></path><path d="M10 20v-5h4v5"></path></svg>
+    </div>
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+      ขาย
+    </a>
+    <a href="Orders.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"></path><path d="M9 8h6M9 12h6"></path></svg>
+      ออเดอร์
+    </a>
+    <a href="Summary.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"></path><path d="M7 16v-5M12 16V6M17 16v-8"></path></svg>
+      สรุปยอด
+    </a>
+    <a href="Products.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; background: #FFF1E8; color: #B33A0A; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"></path><path d="M3 7v10l9 4 9-4V7"></path><path d="M12 11v10"></path></svg>
+      สินค้า
+    </a>
+  </nav>
+
+  <main style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px; box-sizing: border-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700">สินค้า <span style="font-size: 18px; font-weight: 500; color: #5F6360">{{countLabel}}</span></h1>
+      <a href="Product-Add.dc.html" style="height: 52px; padding: 0 22px 0 18px; border-radius: 16px; background: #C4410C; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"></path></svg>
+        เพิ่มสินค้า
+      </a>
+    </div>
+
+    <section style="background: #FFFFFF; border-radius: 22px; padding: 8px 24px; display: flex; flex-direction: column">
+      <div style="display: grid; grid-template-columns: 1fr 160px 120px 120px; gap: 16px; align-items: center; height: 44px; font-size: 14px; color: #5F6360; border-bottom: 1px solid #E3E5E0">
+        <span>สินค้า</span>
+        <span>หมวด</span>
+        <span style="text-align: right">ราคา</span>
+        <span style="text-align: right">มีขาย</span>
+      </div>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+        <div style="display: grid; grid-template-columns: 1fr 160px 120px 120px; gap: 16px; align-items: center; height: 48px; border-bottom: 1px solid #F0F1EE; color: {{r.fg}}">
+          <span style="display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600">
+            {{r.name}}
+            <sc-if value="{{r.out}}" hint-placeholder-val="{{false}}">
+              <span style="height: 24px; padding: 0 8px; border-radius: 999px; background: #F0F1EE; color: #5F6360; font-size: 12px; font-weight: 600; display: flex; align-items: center">หมด</span>
+            </sc-if>
+          </span>
+          <span style="font-size: 15px; color: #5F6360">{{r.catLabel}}</span>
+          <span style="text-align: right; font-size: 17px; font-weight: 700">{{r.priceLabel}}</span>
+          <span style="display: flex; justify-content: flex-end">
+            <button type="button" role="switch" aria-checked="{{r.checked}}" aria-label="มีขาย {{r.name}}" onClick="{{r.toggle}}" style="width: 56px; height: 34px; padding: 3px; box-sizing: border-box; border-radius: 999px; border: none; background: {{r.track}}; display: flex; justify-content: {{r.align}}; cursor: pointer">
+              <span style="width: 28px; height: 28px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(28,29,26,0.3)"></span>
+            </button>
+          </span>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  catalog() {
+    return [
+      { id: 'p1', name: 'หมูปิ้ง', price: 10, cat: 'ปิ้งย่าง', unit: 'ไม้' },
+      { id: 'p2', name: 'ไก่ปิ้ง', price: 25, cat: 'ปิ้งย่าง', unit: 'ไม้' },
+      { id: 'p3', name: 'ลูกชิ้นปิ้ง', price: 10, cat: 'ปิ้งย่าง', unit: 'ไม้' },
+      { id: 'p4', name: 'ไส้กรอกอีสาน', price: 10, cat: 'ปิ้งย่าง', unit: 'ไม้' },
+      { id: 'p5', name: 'ไก่ทอด', price: 20, cat: 'ของทอด', unit: 'ชิ้น' },
+      { id: 'p6', name: 'หนังไก่ทอด', price: 20, cat: 'ของทอด', unit: 'ถุง' },
+      { id: 'p7', name: 'ข้าวเหนียว', price: 10, cat: 'ข้าว', unit: 'ห่อ' },
+      { id: 'p8', name: 'ข้าวเหนียวหมูทอด', price: 35, cat: 'ข้าว', unit: 'ห่อ' },
+      { id: 'p9', name: 'น้ำเปล่า', price: 10, cat: 'เครื่องดื่ม', unit: 'ขวด' },
+      { id: 'p10', name: 'ชาเย็น', price: 25, cat: 'เครื่องดื่ม', unit: 'แก้ว' },
+      { id: 'p11', name: 'โอเลี้ยง', price: 20, cat: 'เครื่องดื่ม', unit: 'แก้ว' },
+      { id: 'p12', name: 'น้ำเก๊กฮวย', price: 20, cat: 'เครื่องดื่ม', unit: 'แก้ว' }
+    ];
+  }
+  renderVals() {
+    const s = this.state || {};
+    const off = s.off !== undefined ? s.off : { p2: true };
+    const list = this.catalog();
+    const rows = list.map((p) => {
+      const out = !!off[p.id];
+      return Object.assign({}, p, {
+        out: out,
+        checked: out ? 'false' : 'true',
+        track: out ? '#C9CCC5' : '#157347',
+        align: out ? 'flex-start' : 'flex-end',
+        fg: out ? '#5F6360' : '#1C1D1A',
+        catLabel: p.cat,
+        priceLabel: '฿' + p.price + ' / ' + p.unit,
+        toggle: () => {
+          const next = Object.assign({}, off);
+          if (next[p.id]) delete next[p.id]; else next[p.id] = true;
+          this.setState({ off: next });
+        }
+      });
+    });
+    const onCount = rows.filter((r) => !r.out).length;
+    return { rows: rows, countLabel: onCount + ' จาก ' + list.length + ' รายการมีขาย' };
+  }
+}
+</script>
+</body>
+</html>

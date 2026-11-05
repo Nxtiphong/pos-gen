@@ -21,8 +21,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th">
-      <body className={`${plexThai.variable} antialiased`}>{children}</body>
+    <html lang="th" className={plexThai.variable}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

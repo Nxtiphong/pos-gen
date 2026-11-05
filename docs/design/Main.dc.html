@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>ขายสินค้า</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; display: flex; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <nav aria-label="เมนูหลัก" style="width: 88px; flex-shrink: 0; background: #FFFFFF; border-right: 1px solid #E3E5E0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 0; box-sizing: border-box">
+    <div aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #1C1D1A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-bottom: 16px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9"></path><path d="M4 9h16"></path><path d="M5 9v11h14V9"></path><path d="M10 20v-5h4v5"></path></svg>
+    </div>
+    <a href="Main.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; background: #FFF1E8; color: #B33A0A; text-decoration: none; font-size: 13px; font-weight: 600">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+      ขาย
+    </a>
+    <a href="Orders.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"></path><path d="M9 8h6M9 12h6"></path></svg>
+      ออเดอร์
+    </a>
+    <a href="Summary.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"></path><path d="M7 16v-5M12 16V6M17 16v-8"></path></svg>
+      สรุปยอด
+    </a>
+    <a href="Products.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 10px 0; border-radius: 14px; color: #5F6360; text-decoration: none; font-size: 13px; font-weight: 500">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"></path><path d="M3 7v10l9 4 9-4V7"></path><path d="M12 11v10"></path></svg>
+      สินค้า
+    </a>
+  </nav>
+
+  <main style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 24px; box-sizing: border-box">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-size: 28px; font-weight: 700">ขายสินค้า</h1>
+      <span style="font-size: 15px; color: #5F6360">พฤ. 5 พ.ย. 2569</span>
+    </div>
+    <div role="group" aria-label="หมวดสินค้า" style="display: flex; gap: 8px; flex-wrap: wrap">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+        <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font-size: 16px; font-weight: 600; cursor: pointer">{{c.label}}</button>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-content: start">
+      <sc-for list="{{products}}" as="p" hint-placeholder-count="12">
+        <button type="button" onClick="{{p.add}}" aria-label="เพิ่ม {{p.name}} ราคา {{p.price}} บาท" style="position: relative; height: 124px; padding: 16px; box-sizing: border-box; border-radius: 18px; border: 2px solid {{p.border}}; background: {{p.bg}}; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: left; color: #1C1D1A; cursor: pointer">
+          <span style="font-size: 19px; font-weight: 600; line-height: 1.3; padding-right: 30px">{{p.name}}</span>
+          <span style="display: flex; align-items: baseline; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">{{p.priceLabel}}</span>
+            <span style="font-size: 14px; color: #5F6360">/ {{p.unit}}</span>
+          </span>
+          <sc-if value="{{p.inCart}}" hint-placeholder-val="{{false}}">
+            <span style="position: absolute; top: 12px; right: 12px; min-width: 32px; height: 32px; padding: 0 8px; box-sizing: border-box; border-radius: 999px; background: #C4410C; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{p.qty}}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+  </main>
+
+  <aside aria-label="บิลปัจจุบัน" style="width: 380px; flex-shrink: 0; background: #FFFFFF; border-left: 1px solid #E3E5E0; display: flex; flex-direction: column; box-sizing: border-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 24px 24px 16px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 14px; color: #5F6360">ออเดอร์ถัดไป</span>
+        <span style="font-size: 24px; font-weight: 700">#A023</span>
+      </div>
+      <sc-if value="{{hasItems}}" hint-placeholder-val="{{false}}">
+        <button type="button" onClick="{{clear}}" style="height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid #E3E5E0; background: #FFFFFF; color: #1C1D1A; font-size: 15px; font-weight: 600; cursor: pointer">ล้างบิล</button>
+      </sc-if>
+    </div>
+    <div style="height: 1px; background: #E3E5E0; margin: 0 24px"></div>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{true}}">
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; color: #5F6360">
+        <div aria-hidden="true" style="width: 72px; height: 72px; border-radius: 24px; background: #F3F4F1; display: flex; align-items: center; justify-content: center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+        </div>
+        <p style="margin: 0; font-size: 18px; font-weight: 600; color: #1C1D1A">ยังไม่มีสินค้าในบิล</p>
+        <p style="margin: 0; font-size: 15px">แตะสินค้าทางซ้ายเพื่อเพิ่ม</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{hasItems}}" hint-placeholder-val="{{false}}">
+      <ul style="flex: 1; margin: 0; padding: 8px 24px; list-style: none; overflow: auto; display: flex; flex-direction: column">
+        <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
+          <li style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF0EB">
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 17px; font-weight: 600">{{l.name}}</span>
+              <span style="font-size: 14px; color: #5F6360">{{l.unitLabel}}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px">
+              <button type="button" onClick="{{l.dec}}" aria-label="ลด {{l.name}}" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #E3E5E0; background: #FFFFFF; color: #1C1D1A; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+              </button>
+              <span style="min-width: 28px; text-align: center; font-size: 18px; font-weight: 700">{{l.qty}}</span>
+              <button type="button" onClick="{{l.inc}}" aria-label="เพิ่ม {{l.name}}" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #E3E5E0; background: #FFFFFF; color: #1C1D1A; display: flex; align-items: center; justify-content: center; cursor: pointer">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5v14"></path></svg>
+              </button>
+            </div>
+            <span style="width: 56px; text-align: right; font-size: 17px; font-weight: 700">{{l.lineTotal}}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </sc-if>
+
+    <div style="padding: 20px 24px 24px; border-top: 1px solid #E3E5E0; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <span style="font-size: 16px; color: #5F6360">รวม {{countLabel}}</span>
+        <span style="font-size: 36px; font-weight: 700; line-height: 1">{{totalLabel}}</span>
+      </div>
+      <sc-if value="{{hasItems}}" hint-placeholder-val="{{false}}">
+        <a href="Checkout.dc.html" style="height: 64px; border-radius: 18px; background: #C4410C; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 22px; font-weight: 700">คิดเงิน · {{totalLabel}}</a>
+      </sc-if>
+      <sc-if value="{{empty}}" hint-placeholder-val="{{true}}">
+        <button type="button" disabled="" style="height: 64px; border-radius: 18px; border: none; background: #E3E5E0; color: #5F6360; font-size: 22px; font-weight: 700">คิดเงิน</button>
+      </sc-if>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  catalog() {
+    return [
+      { id: 'p1', name: 'หมูปิ้ง', price: 10, cat: 'grill', unit: 'ไม้' },
+      { id: 'p2', name: 'ไก่ปิ้ง', price: 25, cat: 'grill', unit: 'ไม้' },
+      { id: 'p3', name: 'ลูกชิ้นปิ้ง', price: 10, cat: 'grill', unit: 'ไม้' },
+      { id: 'p4', name: 'ไส้กรอกอีสาน', price: 10, cat: 'grill', unit: 'ไม้' },
+      { id: 'p5', name: 'ไก่ทอด', price: 20, cat: 'fried', unit: 'ชิ้น' },
+      { id: 'p6', name: 'หนังไก่ทอด', price: 20, cat: 'fried', unit: 'ถุง' },
+      { id: 'p7', name: 'ข้าวเหนียว', price: 10, cat: 'rice', unit: 'ห่อ' },
+      { id: 'p8', name: 'ข้าวเหนียวหมูทอด', price: 35, cat: 'rice', unit: 'ห่อ' },
+      { id: 'p9', name: 'น้ำเปล่า', price: 10, cat: 'drink', unit: 'ขวด' },
+      { id: 'p10', name: 'ชาเย็น', price: 25, cat: 'drink', unit: 'แก้ว' },
+      { id: 'p11', name: 'โอเลี้ยง', price: 20, cat: 'drink', unit: 'แก้ว' },
+      { id: 'p12', name: 'น้ำเก๊กฮวย', price: 20, cat: 'drink', unit: 'แก้ว' }
+    ];
+  }
+  startCart() { return {}; }
+  getCart() {
+    const s = this.state || {};
+    return s.cart !== undefined ? s.cart : this.startCart();
+  }
+  change(id, d) {
+    const cart = Object.assign({}, this.getCart());
+    const n = (cart[id] || 0) + d;
+    if (n <= 0) delete cart[id]; else cart[id] = n;
+    this.setState({ cart: cart });
+  }
+  renderVals() {
+    const s = this.state || {};
+    const cart = this.getCart();
+    const cat = s.cat || 'all';
+    const money = (n) => '฿' + n.toLocaleString('en-US');
+    const cats = [
+      { id: 'all', label: 'ทั้งหมด' },
+      { id: 'grill', label: 'ปิ้งย่าง' },
+      { id: 'fried', label: 'ของทอด' },
+      { id: 'rice', label: 'ข้าว' },
+      { id: 'drink', label: 'เครื่องดื่ม' }
+    ].map((c) => {
+      const on = c.id === cat;
+      return Object.assign({}, c, {
+        pressed: on ? 'true' : 'false',
+        bg: on ? '#1C1D1A' : '#FFFFFF',
+        fg: on ? '#FFFFFF' : '#1C1D1A',
+        border: on ? '#1C1D1A' : '#E3E5E0',
+        pick: () => this.setState({ cat: c.id })
+      });
+    });
+    const all = this.catalog();
+    const products = all.filter((p) => cat === 'all' || p.cat === cat).map((p) => {
+      const q = cart[p.id] || 0;
+      return Object.assign({}, p, {
+        priceLabel: money(p.price),
+        qty: q,
+        inCart: q > 0,
+        border: q > 0 ? '#C4410C' : '#FFFFFF',
+        bg: q > 0 ? '#FFF7F2' : '#FFFFFF',
+        add: () => this.change(p.id, 1)
+      });
+    });
+    const lines = all.filter((p) => cart[p.id]).map((p) => Object.assign({}, p, {
+      qty: cart[p.id],
+      unitLabel: money(p.price) + ' / ' + p.unit,
+      lineTotal: money(p.price * cart[p.id]),
+      inc: () => this.change(p.id, 1),
+      dec: () => this.change(p.id, -1)
+    }));
+    const count = lines.reduce((t, l) => t + l.qty, 0);
+    const total = lines.reduce((t, l) => t + l.qty * l.price, 0);
+    return {
+      cats: cats,
+      products: products,
+      lines: lines,
+      empty: lines.length === 0,
+      hasItems: lines.length > 0,
+      countLabel: count + ' ชิ้น',
+      totalLabel: money(total),
+      clear: () => this.setState({ cart: {} })
+    };
+  }
+}
+</script>
+</body>
+</html>

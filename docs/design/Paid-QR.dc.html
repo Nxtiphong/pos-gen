@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>ชำระเสร็จ · QR บิล</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+a{color:#B33A0A}a:hover{color:#8A2C07}
+</style>
+</helmet>
+<div style="width: 1194px; height: 834px; box-sizing: border-box; padding: 40px; display: flex; gap: 32px; align-items: stretch; background: #F3F4F1; color: #1C1D1A; font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif; overflow: hidden; font-variant-numeric: tabular-nums">
+
+  <section style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 24px">
+    <div style="display: flex; align-items: center; gap: 14px">
+      <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 999px; background: #157347; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+      </span>
+      <h1 style="margin: 0; font-size: 30px; font-weight: 700">ชำระเงินเรียบร้อย</h1>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0">
+      <span style="font-size: 20px; color: #5F6360">หมายเลขออเดอร์</span>
+      <span style="font-size: 148px; font-weight: 700; line-height: 1; letter-spacing: -2px">A023</span>
+    </div>
+
+    <dl style="margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 520px">
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 14px 18px; display: flex; flex-direction: column; gap: 2px">
+        <dt style="font-size: 14px; color: #5F6360">ยอด</dt>
+        <dd style="margin: 0; font-size: 28px; font-weight: 700">฿85</dd>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 14px 18px; display: flex; flex-direction: column; gap: 2px">
+        <dt style="font-size: 14px; color: #5F6360">รับมา</dt>
+        <dd style="margin: 0; font-size: 28px; font-weight: 700">฿100</dd>
+      </div>
+      <div style="background: #E8F4EC; border-radius: 18px; padding: 14px 18px; display: flex; flex-direction: column; gap: 2px">
+        <dt style="font-size: 14px; color: #135F3B">เงินทอน</dt>
+        <dd style="margin: 0; font-size: 28px; font-weight: 700; color: #135F3B">฿15</dd>
+      </div>
+    </dl>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap">
+      <a href="Main.dc.html" style="height: 64px; padding: 0 32px; border-radius: 18px; background: #C4410C; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"></path></svg>
+        เริ่มออเดอร์ถัดไป
+      </a>
+      <a href="Orders.dc.html" style="height: 64px; padding: 0 28px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E3E5E0; color: #1C1D1A; text-decoration: none; display: flex; align-items: center; font-size: 18px; font-weight: 600">ดูคิวออเดอร์</a>
+    </div>
+  </section>
+
+  <section aria-label="QR บิลสำหรับลูกค้า" style="width: 460px; flex-shrink: 0; background: #FFFFFF; border-radius: 28px; padding: 36px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center">
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h2 style="margin: 0; font-size: 26px; font-weight: 700">สแกนเพื่อดูบิล</h2>
+      <p style="margin: 0; font-size: 17px; color: #5F6360">แล้วรอรับแจ้งเตือนบนมือถือเมื่อของพร้อม</p>
+    </div>
+    <a href="Customer-Waiting.dc.html" aria-label="QR บิลออเดอร์ A023 (กดเพื่อจำลองการสแกน)" style="display: block; padding: 20px; border-radius: 24px; border: 2px solid #1C1D1A; background: #FFFFFF">
+      <div aria-hidden="true" style="width: 300px; height: 300px; display: grid; grid-template-columns: repeat(25, minmax(0, 1fr)); grid-template-rows: repeat(25, minmax(0, 1fr))">
+        <sc-for list="{{cells}}" as="c" hint-placeholder-count="625">
+          <span style="background: {{c.bg}}"></span>
+        </sc-for>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 16px; color: #5F6360">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"></rect><path d="M11 18h2"></path></svg>
+      ใช้กล้องมือถือสแกนได้เลย ไม่ต้องลงแอป
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const N = 25;
+    const finder = (x, y, ox, oy) => {
+      const dx = x - ox, dy = y - oy;
+      if (dx < -1 || dy < -1 || dx > 7 || dy > 7) return null;
+      if (dx === -1 || dy === -1 || dx === 7 || dy === 7) return false;
+      if (dx === 0 || dx === 6 || dy === 0 || dy === 6) return true;
+      return dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4;
+    };
+    let seed = 2023;
+    const rand = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return (seed >> 16) & 1; };
+    const cells = [];
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        let dark = null;
+        const f = [finder(x, y, 0, 0), finder(x, y, 18, 0), finder(x, y, 0, 18)].filter((v) => v !== null);
+        if (f.length) dark = f[0];
+        else if (y === 6) dark = x % 2 === 0;
+        else if (x === 6) dark = y % 2 === 0;
+        else if (x >= 16 && x <= 20 && y >= 16 && y <= 20) {
+          const ax = Math.abs(x - 18), ay = Math.abs(y - 18);
+          dark = Math.max(ax, ay) !== 1;
+        } else dark = rand() === 1;
+        cells.push({ bg: dark ? '#1C1D1A' : '#FFFFFF' });
+      }
+    }
+    return { cells: cells };
+  }
+}
+</script>
+</body>
+</html>

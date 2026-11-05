@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { shiftDate, startOfBusinessDate } from "@/domain/business-date";
+import { shiftDate, startOfBusinessDate, type BusinessDate } from "@/domain/business-date";
 import { baht, formatBaht } from "@/domain/money";
 import { summarize } from "@/domain/summary";
 import { useCatalog } from "@/lib/catalog";
-import { useDailyOrders } from "@/lib/daily-orders";
+import { useOrdersOn } from "@/lib/orders";
 import { formatThaiDate } from "@/lib/thai-date";
 import { StaffNav } from "@/components/staff-nav";
 import { HourlyChart, peakOf } from "./hourly-chart";
@@ -24,10 +24,10 @@ function Chevron({ direction }: { direction: "left" | "right" }) {
 const stepButton =
   "flex size-14 cursor-pointer items-center justify-center rounded-xl border border-line bg-card text-ink disabled:cursor-default disabled:opacity-40";
 
-export function SummaryScreen({ today }: { today: string }) {
+export function SummaryScreen({ today }: { today: BusinessDate }) {
   const [date, setDate] = useState(today);
   const { products } = useCatalog();
-  const { status, orders } = useDailyOrders(date);
+  const { status, orders } = useOrdersOn(date);
   const summary = useMemo(() => summarize(orders), [orders]);
   const ready = status === "ready";
   const unitOf = new Map(products.map((p) => [p.id as string, p.unit]));
@@ -36,7 +36,7 @@ export function SummaryScreen({ today }: { today: string }) {
   const maxQty = summary.topProducts[0]?.qty ?? 1;
 
   const pick = (value: string) => {
-    if (value) setDate(value > today ? today : value);
+    if (value) setDate(value > today ? today : (value as BusinessDate));
   };
   const tile = (value: string | number) => (ready ? value : "–");
 

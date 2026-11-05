@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  businessDate,
   formatOrderNo,
   isPublicToken,
   newPublicToken,
@@ -9,15 +8,6 @@ import {
   type OrderNo,
   type OrderProgress,
 } from "./order";
-
-describe("businessDate", () => {
-  it("uses the Bangkok calendar day", () => {
-    expect(businessDate(new Date("2026-11-05T17:30:00Z"))).toBe("2026-11-06");
-    expect(businessDate(new Date("2026-11-05T16:59:59Z"))).toBe("2026-11-05");
-    expect(businessDate(new Date("2026-11-05T17:00:00Z"))).toBe("2026-11-06");
-    expect(businessDate(new Date("2026-12-31T20:00:00Z"))).toBe("2027-01-01");
-  });
-});
 
 describe("formatOrderNo", () => {
   it("pads the counter to three digits after A", () => {

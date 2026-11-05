@@ -2,7 +2,7 @@ export type SummaryOrder = {
   createdAt: Date;
   total: number;
   itemCount: number;
-  lines: { productId: string; name: string; price: number; qty: number }[];
+  lines: readonly { productId: string; name: string; price: number; qty: number }[];
 };
 
 export type TopProduct = { productId: string; name: string; qty: number; revenue: number };
@@ -24,7 +24,7 @@ function bangkokHour(date: Date): number {
   return new Date(date.getTime() + BANGKOK_OFFSET_MS).getUTCHours();
 }
 
-function rankTop(orders: SummaryOrder[]): TopProduct[] {
+function rankTop(orders: readonly SummaryOrder[]): TopProduct[] {
   const byId = new Map<string, TopProduct>();
   for (const order of orders) {
     for (const line of order.lines) {
@@ -39,7 +39,7 @@ function rankTop(orders: SummaryOrder[]): TopProduct[] {
     .slice(0, TOP_COUNT);
 }
 
-function bucketByHour(orders: SummaryOrder[]): HourBucket[] {
+function bucketByHour(orders: readonly SummaryOrder[]): HourBucket[] {
   const hours = orders.map((o) => bangkokHour(o.createdAt));
   const first = hours.length ? Math.min(...hours) : EMPTY_WINDOW.first;
   const last = hours.length ? Math.max(...hours) : EMPTY_WINDOW.last;
@@ -53,7 +53,7 @@ function bucketByHour(orders: SummaryOrder[]): HourBucket[] {
   return buckets;
 }
 
-export function summarize(orders: SummaryOrder[]): Summary {
+export function summarize(orders: readonly SummaryOrder[]): Summary {
   return {
     revenue: orders.reduce((sum, o) => sum + o.total, 0),
     billCount: orders.length,

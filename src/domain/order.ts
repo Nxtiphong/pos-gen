@@ -1,10 +1,10 @@
+import type { BusinessDate } from "./business-date";
 import type { ProductId } from "./catalog";
 import type { Baht } from "./money";
 
 export type OrderId = string & { readonly __brand: "OrderId" };
 export type OrderNo = string & { readonly __brand: "OrderNo" };
 export type PublicToken = string & { readonly __brand: "PublicToken" };
-export type BusinessDate = string & { readonly __brand: "BusinessDate" };
 
 export type OrderLine = {
   productId: ProductId;
@@ -34,17 +34,6 @@ type Receipt = {
 export type Order = Receipt & OrderProgress & { id: OrderId; publicToken: PublicToken; itemCount: number };
 
 export type Bill = Receipt & OrderProgress & { orderId: OrderId };
-
-const bangkokDate = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Bangkok",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
-export function businessDate(now: Date): BusinessDate {
-  return bangkokDate.format(now) as BusinessDate;
-}
 
 export const FIRST_ORDER_NUMBER = 1;
 

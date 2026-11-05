@@ -5,20 +5,22 @@ import {
   collection,
   doc,
   onSnapshot,
+  orderBy,
+  query,
   runTransaction,
   serverTimestamp,
   Timestamp,
+  where,
   type DocumentData,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { baht } from "@/domain/money";
+import { businessDate, type BusinessDate } from "@/domain/business-date";
 import {
-  businessDate,
   FIRST_ORDER_NUMBER,
   formatOrderNo,
   newPublicToken,
   type Bill,
-  type BusinessDate,
   type Order,
   type OrderId,
   type OrderLine,
@@ -73,6 +75,39 @@ export function useNextOrderNo(): OrderNo | null {
     [],
   );
   return next;
+}
+
+const TODAY_CHECK_MS = 30_000;
+
+// Polls instead of one timer to midnight so an iPad that slept through midnight still rolls over on wake.
+export function useToday(): BusinessDate {
+  const [today, setToday] = useState(() => businessDate(new Date()));
+  useEffect(() => {
+    const timer = setInterval(() => setToday(businessDate(new Date())), TODAY_CHECK_MS);
+    return () => clearInterval(timer);
+  }, []);
+  return today;
+}
+
+export type OrdersOn = { status: "loading" | "ready" | "error"; orders: readonly Order[] };
+
+export function useOrdersOn(date: BusinessDate): OrdersOn {
+  const [result, setResult] = useState<OrdersOn & { date: BusinessDate | null }>({ date: null, status: "loading", orders: [] });
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(getDb(), "orders"), where("businessDate", "==", date), orderBy("createdAt")),
+        (snap) =>
+          setResult({
+            date,
+            status: "ready",
+            orders: snap.docs.map((d) => parseOrder(d.id, d.data({ serverTimestamps: "estimate" }))),
+          }),
+        () => setResult({ date, status: "error", orders: [] }),
+      ),
+    [date],
+  );
+  return result.date === date ? result : { status: "loading", orders: [] };
 }
 
 export type Loadable<T> = { state: "loading" } | { state: "missing" } | { state: "ready"; value: T };

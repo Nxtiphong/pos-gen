@@ -12,3 +12,14 @@ export function formatThaiDate(date: Date): string {
     .map((part) => (part.type === "weekday" ? part.value + "." : part.value))
     .join("");
 }
+
+const clock = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  timeZone: "Asia/Bangkok",
+});
+
+export function formatClock(date: Date): string {
+  return clock.format(date);
+}

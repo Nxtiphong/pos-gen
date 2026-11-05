@@ -1,13 +1,12 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
-import { browserLocalPersistence, connectAuthEmulator, initializeAuth, type Auth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore, type Firestore } from "firebase/firestore";
 import firebaseJson from "../../../firebase.json";
 
-const useEmulators = process.env.NEXT_PUBLIC_USE_EMULATORS === "1";
-const emulatorHost = process.env.NEXT_PUBLIC_EMULATOR_HOST || "127.0.0.1";
-const { auth: authEmulator, firestore: firestoreEmulator } = firebaseJson.emulators;
+export const useEmulators = process.env.NEXT_PUBLIC_USE_EMULATORS === "1";
+export const emulatorHost = process.env.NEXT_PUBLIC_EMULATOR_HOST || "127.0.0.1";
+const firestoreEmulator = firebaseJson.emulators.firestore;
 
-function firebaseApp(): FirebaseApp {
+export function firebaseApp(): FirebaseApp {
   if (getApps().length > 0) return getApp();
   return initializeApp({
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,7 +19,6 @@ function firebaseApp(): FirebaseApp {
 }
 
 let db: Firestore | undefined;
-let auth: Auth | undefined;
 
 export function getDb(): Firestore {
   if (!db) {
@@ -28,12 +26,4 @@ export function getDb(): Firestore {
     if (useEmulators) connectFirestoreEmulator(db, emulatorHost, firestoreEmulator.port);
   }
   return db;
-}
-
-export function getStaffAuth(): Auth {
-  if (!auth) {
-    auth = initializeAuth(firebaseApp(), { persistence: browserLocalPersistence });
-    if (useEmulators) connectAuthEmulator(auth, `http://${emulatorHost}:${authEmulator.port}`, { disableWarnings: true });
-  }
-  return auth;
 }

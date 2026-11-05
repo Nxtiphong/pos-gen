@@ -2,7 +2,7 @@
 
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { getStaffAuth } from "./firebase/client";
+import { getStaffAuth } from "./firebase/auth";
 
 export type StaffSession = "loading" | "signedIn" | "signedOut";
 

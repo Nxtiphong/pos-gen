@@ -4,7 +4,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { getStaffAuth } from "@/lib/firebase/client";
+import { getStaffAuth } from "@/lib/firebase/auth";
 import { SHOP_NAME } from "@/lib/shop";
 import { useStaffSession } from "@/lib/staff-session";
 

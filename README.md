@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# POS ร้านในตลาด
 
-## Getting Started
+iPad point of sale for a market stall. Next.js 15 App Router, Firebase (Auth + Firestore), deployed on Vercel. See `docs/architecture.md` for the data model.
 
-First, run the development server:
+## Local development on the emulators
+
+Local runs use the Firebase Emulator Suite with the project id `demo-pos-gen`. The `demo-` prefix means the SDKs can never reach a real project.
+
+1. Create `.env.development.local` (gitignored, loaded by `next dev` and `npm run seed`):
+
+   ```bash
+   NEXT_PUBLIC_FIREBASE_API_KEY=demo-api-key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=demo-pos-gen.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=demo-pos-gen
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=demo-pos-gen.appspot.com
+   NEXT_PUBLIC_USE_EMULATORS=1
+   FIREBASE_PROJECT_ID=demo-pos-gen
+   FIRESTORE_EMULATOR_HOST=127.0.0.1:8180
+   FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099
+   ```
+
+2. Start the emulators (Java on PATH; the script prepends `/opt/homebrew/opt/openjdk/bin`):
+
+   ```bash
+   npm run emulators
+   ```
+
+3. In another terminal, seed the catalog and the staff user `staff@pos.local` (password `SEED_STAFF_PASSWORD`, default `changeme123` on the emulators only):
+
+   ```bash
+   npm run seed
+   ```
+
+4. Run the app and sign in at `/login`:
+
+   ```bash
+   npm run dev
+   ```
+
+Emulator data is in memory and is lost when the emulators stop. Rerun `npm run seed` after each start.
+
+## Checks
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run typecheck
+npm run lint
+npm test            # domain unit tests
+npm run test:rules  # firestore.rules against the emulator
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Copy `.env.example` into the Vercel project settings and fill in the web app config and a service account. Leave `NEXT_PUBLIC_USE_EMULATORS`, `FIRESTORE_EMULATOR_HOST` and `FIREBASE_AUTH_EMULATOR_HOST` unset. In the Firebase console, turn off sign-up (Authentication > Settings > User actions > Enable create) after creating the staff account: the rules treat any signed-in user as staff.

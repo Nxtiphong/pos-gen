@@ -4,7 +4,7 @@ Next.js 15 App Router on Vercel. Firestore is the database and the realtime chan
 
 ## Actors
 
-- **Staff iPad.** Signs in with Firebase Auth (email/password, one account). Reads and writes Firestore directly with the client SDK.
+- **Staff iPad.** Signs in with Firebase Auth (email/password, one account). Reads and writes Firestore directly with the client SDK. The rules treat any signed-in user as staff, so public sign-up must be turned off in the Firebase console (Authentication > Settings > User actions) once the staff account exists. Otherwise anyone holding the public web API key could create an account and get staff access.
 - **Customer phone.** Not signed in. Opens `/b/{publicToken}` from the QR. Subscribes to `bills/{publicToken}` and `queues/{businessDate}` with `onSnapshot`. Never reads `orders`.
 - **Route handler `POST /api/bills/{token}/scan`.** Runs firebase-admin on the Node runtime. Sets `scannedAt` on the bill and its order only when it is still absent, so repeated opens are harmless.
 
@@ -33,4 +33,4 @@ The customer page rings when `bill.notifyCount` rises above the last value it sa
 
 ## Local development
 
-`npm run emulators` starts the Auth, Firestore and Storage emulators (needs `/opt/homebrew/opt/openjdk/bin` on PATH). With `NEXT_PUBLIC_USE_EMULATORS=1` the client SDK connects to them, and the admin SDK follows `FIRESTORE_EMULATOR_HOST`. `npm run seed` writes the seed catalog and the staff user to whichever target the env points at.
+`npm run emulators` starts the Auth (9099), Firestore (8180) and Storage (9199) emulators for project `demo-pos-gen` (the script prepends `/opt/homebrew/opt/openjdk/bin` to PATH). Ports live in `firebase.json`, which the client SDK reads. With `NEXT_PUBLIC_USE_EMULATORS=1` the client SDK connects to them, and the admin SDK follows `FIRESTORE_EMULATOR_HOST`. `npm run seed` writes the seed catalog and the staff user to whichever target the env points at.

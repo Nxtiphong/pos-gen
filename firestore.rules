@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isStaff() {
+      return request.auth != null;
+    }
+
+    match /categories/{id} {
+      allow read, write: if isStaff();
+    }
+
+    match /products/{id} {
+      allow read, write: if isStaff();
+    }
+
+    match /counters/{businessDate} {
+      allow read, write: if isStaff();
+    }
+
+    match /orders/{id} {
+      allow read, write: if isStaff();
+    }
+
+    // The bill id is the unguessable public token, so a customer may fetch one by id but never enumerate them.
+    match /bills/{publicToken} {
+      allow get: if true;
+      allow list, write: if isStaff();
+    }
+
+    match /queues/{businessDate} {
+      allow get: if true;
+      allow list, write: if isStaff();
+    }
+  }
+}

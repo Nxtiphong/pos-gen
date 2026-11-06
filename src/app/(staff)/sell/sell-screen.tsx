@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type Dispatch, type ReactNode } from "react";
 import type { CategoryId } from "@/domain/catalog";
@@ -66,12 +67,18 @@ export function SellScreen({ today }: { today: string }) {
                   type="button"
                   aria-label={`เพิ่ม ${p.name} ราคา ${p.price} บาท`}
                   onClick={() => dispatch({ type: "add", productId: p.id })}
-                  className={`relative flex h-[124px] min-w-0 cursor-pointer flex-col items-start justify-between rounded-[18px] border-2 p-4 text-left text-ink ${
-                    qty > 0 ? "border-accent bg-accent-tint" : "border-card bg-card"
-                  }`}
+                  className={`relative flex min-w-0 cursor-pointer flex-col items-start rounded-[18px] border-2 text-left text-ink ${
+                    p.imageUrl ? "gap-2 p-2.5 pb-3.5" : "h-[124px] justify-between p-4"
+                  } ${qty > 0 ? "border-accent bg-accent-tint" : "border-card bg-card"}`}
                 >
-                  <span className="pr-[30px] text-[19px] leading-[1.3] font-semibold">{p.name}</span>
-                  <span className="flex items-baseline gap-1">
+                  {p.imageUrl && (
+                    <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[12px] bg-ground">
+                      {/* Product photos may live in /public or Firebase Storage, so skip the optimizer's host allowlist. */}
+                      <Image src={p.imageUrl} alt="" fill unoptimized className="object-cover" />
+                    </span>
+                  )}
+                  <span className={`text-[19px] leading-[1.3] font-semibold ${p.imageUrl ? "px-1.5" : "pr-[30px]"}`}>{p.name}</span>
+                  <span className={`flex items-baseline gap-1 ${p.imageUrl ? "px-1.5" : ""}`}>
                     <span className="text-[20px] font-bold">{formatBaht(p.price)}</span>
                     <span className="text-[14px] text-ink-2">/ {p.unit}</span>
                   </span>

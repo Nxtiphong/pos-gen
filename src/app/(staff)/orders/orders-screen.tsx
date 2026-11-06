@@ -57,7 +57,7 @@ export function OrdersScreen() {
       <StaffNav />
 
       <main aria-busy={queue.status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 max-md:flex-col max-md:items-stretch max-md:gap-3">
           <h1 className="text-[28px] font-bold">คิวออเดอร์</h1>
           <div role="tablist" aria-label="สถานะออเดอร์" className="flex gap-1 rounded-[16px] bg-[#e6e8e3] p-1">
             {TABS.map(({ status, label }) => {
@@ -71,7 +71,7 @@ export function OrdersScreen() {
                   aria-selected={on}
                   aria-controls="orders-panel"
                   onClick={() => setTab(status)}
-                  className={`flex h-11 cursor-pointer items-center gap-2 rounded-[12px] px-[18px] text-[16px] font-semibold ${
+                  className={`flex h-11 cursor-pointer items-center gap-2 rounded-[12px] px-[18px] text-[16px] font-semibold max-md:flex-1 max-md:justify-center max-md:px-2 ${
                     on ? "bg-card text-ink" : "bg-transparent text-[#4d514e]"
                   }`}
                 >
@@ -95,7 +95,7 @@ export function OrdersScreen() {
           ) : shown.length === 0 ? (
             <p className="mt-10 text-center text-[18px] text-ink-2">ไม่มีออเดอร์ในสถานะนี้</p>
           ) : (
-            <div className="grid grid-cols-3 content-start gap-3.5">
+            <div className="grid grid-cols-1 content-start gap-3.5 md:grid-cols-2 lg:grid-cols-3">
               {shown.map((order) => (
                 <OrderCard
                   key={order.id}
@@ -122,17 +122,17 @@ export function OrdersScreen() {
         <div
           key={toast.seq}
           role="status"
-          className="absolute bottom-7 left-1/2 ml-11 flex -translate-x-1/2 items-center gap-4 rounded-[18px] bg-ink py-3 pr-3 pl-5 whitespace-nowrap text-white shadow-[0_12px_32px_rgba(28,29,26,0.25)]"
+          className="absolute bottom-7 left-1/2 ml-11 flex -translate-x-1/2 items-center gap-4 rounded-[18px] bg-ink py-3 pr-3 pl-5 whitespace-nowrap text-white shadow-[0_12px_32px_rgba(28,29,26,0.25)] max-md:right-4 max-md:bottom-[calc(var(--spacing-tabbar)+12px)] max-md:left-4 max-md:ml-0 max-md:translate-x-0 max-md:gap-3 max-md:whitespace-normal"
         >
           <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12l5 5 9-10" />
           </svg>
-          <span className="text-[16px] font-semibold">{toast.text}</span>
+          <span className="text-[16px] font-semibold max-md:min-w-0 max-md:flex-1">{toast.text}</span>
           <button
             type="button"
             aria-label="ปิด"
             onClick={() => setToast(null)}
-            className="flex size-10 cursor-pointer items-center justify-center rounded-[12px] bg-transparent text-white"
+            className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[12px] bg-transparent text-white"
           >
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <path d="M6 6l12 12M18 6L6 18" />

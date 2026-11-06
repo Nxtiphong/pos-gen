@@ -15,6 +15,7 @@
   --color-ok: #157347;
   --color-ok-soft: #e8f4ec;
   --color-ok-ink: #135f3b;
+  --spacing-tabbar: calc(64px + env(safe-area-inset-bottom));
   --font-sans: var(--font-plex-thai), "Noto Sans Thai", system-ui, sans-serif;
 
   --animate-ready-ring: ready-ring 1.4s ease-out infinite;

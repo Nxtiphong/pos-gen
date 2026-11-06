@@ -49,7 +49,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
     <div className="flex h-dvh w-full overflow-hidden bg-ground text-ink">
       <StaffNav />
 
-      <main aria-busy={status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6">
+      <main aria-busy={status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h1 className="text-[28px] font-bold">{isToday ? "สรุปยอดวันนี้" : "สรุปยอดรายวัน"}</h1>

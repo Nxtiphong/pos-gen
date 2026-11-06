@@ -19,7 +19,7 @@ export function ProductsScreen() {
     <div className="flex h-dvh w-full overflow-hidden bg-ground text-ink">
       <StaffNav />
 
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 p-6">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-[28px] font-bold">
             สินค้า{" "}

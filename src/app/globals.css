@@ -87,3 +87,24 @@ input {
 .wait-dot {
   animation: wait-pulse 1.6s ease-out infinite;
 }
+
+@keyframes nf-spin {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  60% {
+    transform: rotate(380deg) scale(1.08);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes nf-wag {
+  from {
+    transform: rotate(-18deg);
+  }
+  to {
+    transform: rotate(18deg);
+  }
+}

@@ -59,9 +59,13 @@ export function OrdersScreen() {
       <StaffNav />
 
       <main aria-busy={queue.status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
-        <div className="flex items-center justify-between gap-4 max-md:flex-col max-md:items-stretch max-md:gap-3">
+        <div className="flex items-center justify-between gap-4 max-md:contents">
           <h1 className="text-[28px] font-bold">คิวออเดอร์</h1>
-          <div role="tablist" aria-label="สถานะออเดอร์" className="flex gap-1 rounded-[16px] bg-[#e6e8e3] p-1">
+          <div
+            role="tablist"
+            aria-label="สถานะออเดอร์"
+            className="flex gap-1 rounded-[16px] bg-[#e6e8e3] p-1 max-md:sticky max-md:top-0 max-md:z-10 max-md:grid max-md:grid-cols-4 max-md:shadow-[0_0_0_8px_var(--color-ground)]"
+          >
             {TABS.map(({ status, label }) => {
               const on = status === tab;
               return (
@@ -73,14 +77,14 @@ export function OrdersScreen() {
                   aria-selected={on}
                   aria-controls="orders-panel"
                   onClick={() => setTab(status)}
-                  className={`flex h-11 cursor-pointer items-center gap-2 rounded-[12px] px-[18px] text-[16px] font-semibold max-md:flex-1 max-md:justify-center max-md:px-2 ${
-                    on ? "bg-card text-ink" : "bg-transparent text-[#4d514e]"
+                  className={`flex h-11 cursor-pointer items-center gap-2 rounded-[12px] px-[18px] text-[16px] font-semibold max-md:h-auto max-md:min-h-[60px] max-md:min-w-0 max-md:flex-col-reverse max-md:justify-center max-md:gap-0.5 max-md:px-1 max-md:py-1.5 ${
+                    on ? "bg-card text-ink shadow-[0_1px_3px_rgba(28,29,26,0.12)]" : "bg-transparent text-[#4d514e]"
                   }`}
                 >
-                  {label}
+                  <span className="whitespace-nowrap max-md:text-[13px] max-md:leading-tight">{label}</span>
                   <span
-                    className={`flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[13px] ${
-                      on ? "bg-ink text-white" : "bg-[#d5d8d2] text-ink"
+                    className={`flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[13px] max-md:h-auto max-md:min-w-0 max-md:bg-transparent max-md:px-0 max-md:text-[20px] max-md:leading-none max-md:font-bold ${
+                      on ? "bg-ink text-white max-md:text-accent" : "bg-[#d5d8d2] text-ink max-md:text-ink"
                     }`}
                   >
                     {counts[status]}

@@ -8,6 +8,12 @@ function requireEnv(name: string): string {
   return value;
 }
 
+// Dashboards and .env files store the PEM differently: wrapped in quotes, with literal \n, or with real newlines.
+export function normalizePrivateKey(raw: string): string {
+  const quoted = raw.trim().match(/^(['"])([\s\S]*)\1$/);
+  return (quoted ? quoted[2] : raw).replace(/\\n/g, "\n");
+}
+
 function adminApp(): App {
   if (getApps().length > 0) return getApp();
   const projectId = requireEnv("FIREBASE_PROJECT_ID");
@@ -17,8 +23,7 @@ function adminApp(): App {
     credential: cert({
       projectId,
       clientEmail: requireEnv("FIREBASE_CLIENT_EMAIL"),
-      // Vercel and .env files store the PEM on one line with literal \n sequences.
-      privateKey: requireEnv("FIREBASE_PRIVATE_KEY").replace(/\\n/g, "\n"),
+      privateKey: normalizePrivateKey(requireEnv("FIREBASE_PRIVATE_KEY")),
     }),
   });
 }

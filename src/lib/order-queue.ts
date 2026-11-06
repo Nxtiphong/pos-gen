@@ -10,6 +10,7 @@ export type OrderQueue = OrdersOn & {
   notify: (order: Order) => Promise<void>;
   renotify: (order: Order) => Promise<void>;
   pickup: (order: Order) => Promise<void>;
+  cancel: (order: Order) => Promise<void>;
 };
 
 async function apply(order: Order, event: OrderEvent): Promise<void> {
@@ -35,6 +36,7 @@ const actions = {
   notify: (order: Order) => apply(order, "notify"),
   renotify: (order: Order) => apply(order, "renotify"),
   pickup: (order: Order) => apply(order, "pickup"),
+  cancel: (order: Order) => apply(order, "cancel"),
 };
 
 export function useOrderQueue(): OrderQueue {

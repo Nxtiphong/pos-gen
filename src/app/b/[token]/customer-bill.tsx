@@ -132,7 +132,19 @@ function BillView({
 }) {
   return (
     <Shell>
-      {bill.status === "picked_up" ? (
+      {bill.status === "cancelled" ? (
+        <section className="flex flex-col items-center gap-3 rounded-[28px] bg-card p-6 text-center">
+          <span aria-hidden="true" className="flex size-[72px] items-center justify-center rounded-full bg-[#FCE8E6] text-[#A3261B]">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </span>
+          <div role="status" className="flex flex-col gap-1">
+            <h1 className="text-[24px] leading-[1.3] font-bold">ออเดอร์นี้ถูกยกเลิก</h1>
+            <span className="text-[15px] text-ink-2">ออเดอร์ {bill.orderNo} · สอบถามเพิ่มเติมที่หน้าร้าน</span>
+          </div>
+        </section>
+      ) : bill.status === "picked_up" ? (
         <section className="flex flex-col items-center gap-3 rounded-[28px] bg-card p-6 text-center">
           <span aria-hidden="true" className="flex size-[72px] items-center justify-center rounded-full bg-ok-soft text-ok">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

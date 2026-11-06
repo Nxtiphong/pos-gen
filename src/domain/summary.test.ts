@@ -21,6 +21,14 @@ describe("summarize", () => {
     expect(result.itemCount).toBe(8);
   });
 
+  it("leaves cancelled bills out of every number", () => {
+    const kept = order("2026-11-05T03:00:00Z", [line("p1", "หมูปิ้ง", 10, 2)]);
+    const voided = { ...order("2026-11-05T03:10:00Z", [line("p2", "ไก่ปิ้ง", 25, 4)]), status: "cancelled" };
+    const result = summarize([kept, voided]);
+    expect([result.revenue, result.billCount, result.itemCount]).toEqual([20, 1, 2]);
+    expect(result.topProducts.map((p) => p.name)).toEqual(["หมูปิ้ง"]);
+  });
+
   it("puts 23:30 UTC in the 06:00 Bangkok bucket", () => {
     const result = summarize([order("2026-11-04T23:30:00Z", [line("p1", "หมูปิ้ง", 10, 3)])]);
     expect(result.hourly).toEqual([{ hour: 6, revenue: 30, billCount: 1 }]);

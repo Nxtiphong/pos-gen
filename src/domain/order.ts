@@ -13,12 +13,13 @@ export type OrderLine = {
   qty: number;
 };
 
-export type OrderStatus = "preparing" | "notified" | "picked_up";
+export type OrderStatus = "preparing" | "notified" | "picked_up" | "cancelled";
 
 export type OrderProgress =
   | { status: "preparing"; notifyCount: 0 }
   | { status: "notified"; notifyCount: number; notifiedAt: Date }
-  | { status: "picked_up"; notifyCount: number; notifiedAt?: Date; pickedUpAt: Date };
+  | { status: "picked_up"; notifyCount: number; notifiedAt?: Date; pickedUpAt: Date }
+  | { status: "cancelled"; notifyCount: number; notifiedAt?: Date; pickedUpAt?: Date; cancelledAt: Date };
 
 export type PaymentMethod = "cash" | "transfer";
 
@@ -58,11 +59,13 @@ export function isPublicToken(raw: string): raw is PublicToken {
   return /^[A-Za-z0-9_-]{22,}$/.test(raw);
 }
 
+export const isCounted = (order: { status: OrderStatus }) => order.status !== "cancelled";
+
 export function queueAhead(preparing: readonly OrderNo[], orderNo: OrderNo): number {
   return Math.max(preparing.indexOf(orderNo), 0);
 }
 
-export type OrderEvent = "notify" | "renotify" | "pickup";
+export type OrderEvent = "notify" | "renotify" | "pickup" | "cancel";
 
 export type TransitionResult =
   | { ok: true; progress: OrderProgress }
@@ -74,12 +77,18 @@ const TRANSITIONS: { [S in OrderStatus]: Partial<Record<OrderEvent, Step<S>>> } 
   preparing: {
     notify: (_, now) => ({ status: "notified", notifyCount: 1, notifiedAt: now }),
     pickup: (_, now) => ({ status: "picked_up", notifyCount: 0, pickedUpAt: now }),
+    cancel: (_, now) => ({ status: "cancelled", notifyCount: 0, cancelledAt: now }),
   },
   notified: {
     renotify: (p, now) => ({ status: "notified", notifyCount: p.notifyCount + 1, notifiedAt: now }),
     pickup: (p, now) => ({ status: "picked_up", notifyCount: p.notifyCount, notifiedAt: p.notifiedAt, pickedUpAt: now }),
+    cancel: (p, now) => ({ status: "cancelled", notifyCount: p.notifyCount, notifiedAt: p.notifiedAt, cancelledAt: now }),
   },
-  picked_up: {},
+  // A wrong or refunded bill can still be voided after the customer left.
+  picked_up: {
+    cancel: (p, now) => ({ status: "cancelled", notifyCount: p.notifyCount, ...(p.notifiedAt && { notifiedAt: p.notifiedAt }), pickedUpAt: p.pickedUpAt, cancelledAt: now }),
+  },
+  cancelled: {},
 };
 
 export function transition(progress: OrderProgress, event: OrderEvent, now: Date): TransitionResult {

@@ -43,6 +43,17 @@ describe("ledger", () => {
     expect(result.totals).toEqual({ itemCount: 6, total: 90, cash: 25, transfer: 65, cashReceived: 165, change: 75 });
   });
 
+  it("lists a cancelled bill but leaves it out of the totals", () => {
+    const voided = order("A003", "10:50", { status: "cancelled", notifyCount: 0, cancelledAt: at("10:55") }, [{ ...tea, qty: 2 }], 50);
+    const result = ledger([...orders, voided]);
+    expect(result.rows.map((r) => [r.orderNo, r.status])).toEqual([
+      ["A001", "picked_up"],
+      ["A002", "preparing"],
+      ["A003", "cancelled"],
+    ]);
+    expect(result.totals).toEqual({ itemCount: 6, total: 90, cash: 25, transfer: 65, cashReceived: 165, change: 75 });
+  });
+
   it("is empty with zero totals when there are no bills", () => {
     expect(ledger([])).toEqual({ rows: [], totals: { itemCount: 0, total: 0, cash: 0, transfer: 0, cashReceived: 0, change: 0 } });
   });

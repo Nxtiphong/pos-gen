@@ -163,6 +163,14 @@ function parseProgress(data: DocumentData): OrderProgress {
   switch (data.status) {
     case "notified":
       return { status: "notified", notifyCount, notifiedAt: notifiedAt ?? new Date(0) };
+    case "cancelled":
+      return {
+        status: "cancelled",
+        notifyCount,
+        ...(notifiedAt && { notifiedAt }),
+        ...(toDate(data.pickedUpAt) && { pickedUpAt: toDate(data.pickedUpAt) }),
+        cancelledAt: toDate(data.cancelledAt) ?? new Date(0),
+      };
     case "picked_up":
       return { status: "picked_up", notifyCount, ...(notifiedAt && { notifiedAt }), pickedUpAt: toDate(data.pickedUpAt) ?? new Date(0) };
     default:

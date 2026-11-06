@@ -87,6 +87,26 @@ describe("transition", () => {
     });
   });
 
+  it("cancel voids an order from any live status and keeps what already happened", () => {
+    const pickedUp: OrderProgress = { status: "picked_up", notifyCount: 1, notifiedAt: t1, pickedUpAt: t2 };
+    expect(transition(preparing, "cancel", t3)).toEqual({ ok: true, progress: { status: "cancelled", notifyCount: 0, cancelledAt: t3 } });
+    expect(transition(notified, "cancel", t3)).toEqual({
+      ok: true,
+      progress: { status: "cancelled", notifyCount: 1, notifiedAt: t1, cancelledAt: t3 },
+    });
+    expect(transition(pickedUp, "cancel", t3)).toEqual({
+      ok: true,
+      progress: { status: "cancelled", notifyCount: 1, notifiedAt: t1, pickedUpAt: t2, cancelledAt: t3 },
+    });
+  });
+
+  it("a cancelled order accepts no further event", () => {
+    const cancelled: OrderProgress = { status: "cancelled", notifyCount: 0, cancelledAt: t2 };
+    for (const event of ["notify", "renotify", "pickup", "cancel"] as const) {
+      expect(transition(cancelled, event, t3)).toEqual({ ok: false, error: { from: "cancelled", event } });
+    }
+  });
+
   it("rejects every transition the table does not list", () => {
     const pickedUp: OrderProgress = { status: "picked_up", notifyCount: 1, notifiedAt: t1, pickedUpAt: t2 };
     expect(transition(preparing, "renotify", t2)).toEqual({ ok: false, error: { from: "preparing", event: "renotify" } });

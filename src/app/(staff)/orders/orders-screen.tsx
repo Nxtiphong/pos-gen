@@ -7,12 +7,14 @@ import { itemsSummary, ordersForTab, queueTabs } from "@/domain/queue";
 import { useOrderQueue } from "@/lib/order-queue";
 import { formatClock } from "@/lib/thai-date";
 import { BillQrButton } from "./bill-qr-button";
+import { CancelOrderButton } from "./cancel-order-button";
 import { StaffNav } from "@/components/staff-nav";
 
 const TABS: { status: OrderStatus; label: string }[] = [
   { status: "preparing", label: "กำลังทำ" },
   { status: "notified", label: "แจ้งแล้ว" },
   { status: "picked_up", label: "รับแล้ว" },
+  { status: "cancelled", label: "ยกเลิก" },
 ];
 
 const TOAST_MS = 4000;
@@ -111,6 +113,14 @@ export function OrdersScreen() {
                       show(order, `บันทึกการรับของ ${order.orderNo} ไม่สำเร็จ · ลองอีกครั้ง`);
                     }
                   }}
+                  onCancel={async () => {
+                    try {
+                      await queue.cancel(order);
+                      show(order, `ยกเลิกออเดอร์ ${order.orderNo} แล้ว · ไม่นับในสรุปยอด`);
+                    } catch {
+                      show(order, `ยกเลิก ${order.orderNo} ไม่สำเร็จ · ลองอีกครั้ง`);
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -150,12 +160,14 @@ function OrderCard({
   onNotify,
   onRenotify,
   onPickup,
+  onCancel,
 }: {
   order: Order;
   highlighted: boolean;
   onNotify: () => void;
   onRenotify: () => void;
   onPickup: () => void;
+  onCancel: () => Promise<void>;
 }) {
   return (
     <article
@@ -184,6 +196,7 @@ function OrderCard({
         <span className="text-[20px] font-bold text-ink">{formatBaht(order.total)}</span>
       </div>
       <CardActions order={order} onNotify={onNotify} onRenotify={onRenotify} onPickup={onPickup} />
+      {order.status !== "cancelled" && <CancelOrderButton order={order} onConfirm={onCancel} />}
     </article>
   );
 }
@@ -244,6 +257,12 @@ function CardActions({
       return (
         <span className="flex h-11 items-center justify-center rounded-[14px] bg-ground text-[15px] font-semibold text-ink-2">
           ลูกค้ารับแล้ว · {formatClock(order.pickedUpAt)}
+        </span>
+      );
+    case "cancelled":
+      return (
+        <span className="flex h-11 items-center justify-center rounded-[14px] bg-[#FCE8E6] text-[15px] font-semibold text-[#A3261B]">
+          ยกเลิกแล้ว · {formatClock(order.cancelledAt)}
         </span>
       );
   }

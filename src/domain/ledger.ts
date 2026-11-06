@@ -1,10 +1,11 @@
-import { PAYMENT_LABEL, type Order, type OrderStatus, type PaymentMethod } from "./order";
+import { isCounted, PAYMENT_LABEL, type Order, type OrderStatus, type PaymentMethod } from "./order";
 import { itemsSummary } from "./queue";
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {
   preparing: "กำลังทำ",
   notified: "แจ้งแล้ว",
   picked_up: "รับแล้ว",
+  cancelled: "ยกเลิก",
 };
 
 export type LedgerRow = {
@@ -40,7 +41,7 @@ export function ledger(orders: readonly Order[]): Ledger {
       change: o.change,
       status: o.status,
     }));
-  const sum = (pick: (r: LedgerRow) => number) => rows.reduce((acc, r) => acc + pick(r), 0);
+  const sum = (pick: (r: LedgerRow) => number) => rows.filter(isCounted).reduce((acc, r) => acc + pick(r), 0);
   return {
     rows,
     totals: {

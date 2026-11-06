@@ -16,6 +16,7 @@ const STATUS_STYLE: Record<OrderStatus, string> = {
   preparing: "bg-accent-soft text-accent-deep",
   notified: "bg-ok-soft text-ok-ink",
   picked_up: "bg-ground text-ink-2",
+  cancelled: "bg-[#FCE8E6] text-[#A3261B]",
 };
 
 function download(data: Ledger, date: string) {
@@ -30,12 +31,16 @@ function download(data: Ledger, date: string) {
 
 export function BillsTable({ data, date }: { data: Ledger; date: string }) {
   const { rows, totals } = data;
+  const cancelledCount = rows.filter((r) => r.status === "cancelled").length;
   const num = "px-4 py-3 text-right whitespace-nowrap";
   return (
     <section aria-labelledby="bills-title" className="flex min-w-0 flex-col gap-4 rounded-[22px] bg-card p-6 max-md:p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="bills-title" className="text-[20px] font-bold">
-          รายละเอียดบิล <span className="text-[16px] font-medium text-ink-2">({rows.length} บิล)</span>
+          รายละเอียดบิล{" "}
+          <span className="text-[16px] font-medium text-ink-2">
+            ({rows.length} บิล{cancelledCount > 0 && ` · ยกเลิก ${cancelledCount} ไม่นับรวมยอด`})
+          </span>
         </h2>
         <button
           type="button"
@@ -65,7 +70,7 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.id} className="border-t border-line-soft">
+              <tr key={r.id} className={`border-t border-line-soft ${r.status === "cancelled" ? "text-ink-2 line-through decoration-ink-2/60" : ""}`}>
                 <th scope="row" className="px-4 py-3 text-left font-bold">{r.orderNo}</th>
                 <td className="px-4 py-3 whitespace-nowrap text-ink-2">{formatClock(r.createdAt)}</td>
                 <td className="px-4 py-3 max-lg:min-w-[220px]">{r.items}</td>

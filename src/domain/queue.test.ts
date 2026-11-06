@@ -30,7 +30,7 @@ function order(orderNo: string, progress: OrderProgress = preparing, created = "
 describe("queueTabs", () => {
   it("counts orders per status, including empty statuses", () => {
     const orders = [order("A001"), order("A002"), order("A003", notified("10:30"))];
-    expect(queueTabs(orders)).toEqual({ preparing: 2, notified: 1, picked_up: 0 });
+    expect(queueTabs(orders)).toEqual({ preparing: 2, notified: 1, picked_up: 0, cancelled: 0 });
   });
 });
 

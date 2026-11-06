@@ -1,4 +1,5 @@
 export type SummaryOrder = {
+  status?: string;
   createdAt: Date;
   total: number;
   itemCount: number;
@@ -53,7 +54,8 @@ function bucketByHour(orders: readonly SummaryOrder[]): HourBucket[] {
   return buckets;
 }
 
-export function summarize(orders: readonly SummaryOrder[]): Summary {
+export function summarize(all: readonly SummaryOrder[]): Summary {
+  const orders = all.filter((o) => o.status !== "cancelled");
   return {
     revenue: orders.reduce((sum, o) => sum + o.total, 0),
     billCount: orders.length,

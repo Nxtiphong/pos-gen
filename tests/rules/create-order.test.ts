@@ -32,6 +32,7 @@ const noon = new Date("2026-11-05T05:00:00Z");
 const sale = {
   lines: [{ productId: "p1" as ProductId, name: "หมูปิ้ง", price: baht(10), qty: 4 }],
   total: baht(40),
+  paymentMethod: "cash" as const,
   cashReceived: baht(100),
   change: baht(60),
 };

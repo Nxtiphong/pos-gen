@@ -20,8 +20,8 @@ export function ProductsScreen() {
       <StaffNav />
 
       <main className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
-        <div className="flex items-center justify-between gap-4">
-          <h1 className="text-[28px] font-bold">
+        <div className="flex flex-wrap items-center justify-between gap-4 max-md:gap-3">
+          <h1 className="min-w-0 text-[28px] font-bold">
             สินค้า{" "}
             <span className="text-[18px] font-medium text-ink-2">
               {onCount} จาก {rows.length} รายการมีขาย
@@ -39,32 +39,32 @@ export function ProductsScreen() {
           </button>
         </div>
 
-        <section aria-label="รายการสินค้า" className="flex min-h-0 flex-col overflow-auto rounded-[22px] bg-card px-6 py-2">
-          <div className="grid h-11 shrink-0 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-line text-[14px] text-ink-2">
+        <section aria-label="รายการสินค้า" className="flex min-h-0 flex-col overflow-auto rounded-[22px] bg-card px-6 py-2 max-md:rounded-none max-md:bg-transparent max-md:p-0">
+          <div className="grid h-11 shrink-0 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-line text-[14px] text-ink-2 max-md:hidden">
             <span>สินค้า</span>
             <span>หมวด</span>
             <span className="text-right">ราคา</span>
             <span className="text-right">มีขาย</span>
           </div>
-          <ul>
+          <ul className="max-md:flex max-md:flex-col max-md:gap-2.5">
             {rows.map((p) => (
               <li
                 key={p.id}
-                className={`grid h-12 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-[#f0f1ee] ${
+                className={`grid h-12 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-[#f0f1ee] max-md:h-auto max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-x-3 max-md:gap-y-1 max-md:rounded-[18px] max-md:border-b-0 max-md:bg-card max-md:p-4 ${
                   p.isAvailable ? "text-ink" : "text-ink-2"
                 }`}
               >
-                <span className="flex items-center gap-2.5 text-[17px] font-semibold">
+                <span className="flex min-w-0 flex-wrap items-center gap-2.5 text-[17px] font-semibold max-md:col-start-1">
                   {p.name}
                   {!p.isAvailable && (
                     <span className="flex h-6 items-center rounded-full bg-[#f0f1ee] px-2 text-[12px] font-semibold text-ink-2">หมด</span>
                   )}
                 </span>
-                <span className="text-[15px] text-ink-2">{categoryName.get(p.categoryId)}</span>
-                <span className="text-right text-[17px] font-bold">
+                <span className="text-[15px] text-ink-2 max-md:col-start-1">{categoryName.get(p.categoryId)}</span>
+                <span className="text-right text-[17px] font-bold max-md:col-start-1 max-md:text-left">
                   {formatBaht(p.price)} / {p.unit}
                 </span>
-                <span className="flex justify-end">
+                <span className="flex justify-end max-md:col-start-2 max-md:row-span-3 max-md:row-start-1 max-md:items-center">
                   <button
                     type="button"
                     role="switch"

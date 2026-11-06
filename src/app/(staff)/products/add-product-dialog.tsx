@@ -98,9 +98,9 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
       onClick={(e) => {
         if (e.target === dialogRef.current) dialogRef.current?.close();
       }}
-      className="m-auto w-[560px] max-w-[calc(100vw-32px)] rounded-[28px] bg-card p-0 text-ink shadow-[0_24px_64px_rgba(28,29,26,0.3)] backdrop:bg-ink/50"
+      className="m-auto w-[560px] max-w-[calc(100vw-32px)] rounded-[28px] bg-card p-0 text-ink shadow-[0_24px_64px_rgba(28,29,26,0.3)] backdrop:bg-ink/50 max-md:h-dvh max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-none"
     >
-      <form noValidate onSubmit={submit} className="flex max-h-dvh flex-col gap-5 overflow-auto p-7">
+      <form noValidate onSubmit={submit} className="flex max-h-dvh flex-col gap-5 overflow-auto p-7 max-md:h-full max-md:px-4 max-md:pt-4 max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-between gap-3">
           <h2 id={`${ids}-title`} className="text-[26px] font-bold">
             เพิ่มสินค้า
@@ -251,7 +251,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
           </p>
         )}
 
-        <div className="mt-1 grid grid-cols-[1fr_2fr] gap-3">
+        <div className="mt-1 grid grid-cols-[1fr_2fr] gap-3 max-md:mt-auto">
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}

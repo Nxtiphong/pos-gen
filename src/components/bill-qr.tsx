@@ -1,6 +1,6 @@
 import { create } from "qrcode";
 
-export function BillQr({ url, label }: { url: string; label: string }) {
+export function BillQr({ url, label, size = 300 }: { url: string; label: string; size?: number }) {
   const { modules } = create(url, { errorCorrectionLevel: "M" });
   let d = "";
   for (let y = 0; y < modules.size; y++) {
@@ -12,8 +12,8 @@ export function BillQr({ url, label }: { url: string; label: string }) {
     <svg
       role="img"
       aria-label={label}
-      width="300"
-      height="300"
+      width={size}
+      height={size}
       viewBox={`0 0 ${modules.size} ${modules.size}`}
       shapeRendering="crispEdges"
       className="block"

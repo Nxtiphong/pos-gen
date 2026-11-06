@@ -6,6 +6,7 @@ import type { Order, OrderStatus } from "@/domain/order";
 import { itemsSummary, ordersForTab, queueTabs } from "@/domain/queue";
 import { useOrderQueue } from "@/lib/order-queue";
 import { formatClock } from "@/lib/thai-date";
+import { BillQrButton } from "./bill-qr-button";
 import { StaffNav } from "@/components/staff-nav";
 
 const TABS: { status: OrderStatus; label: string }[] = [
@@ -163,7 +164,10 @@ function OrderCard({
     >
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-[34px] leading-none font-bold">{order.orderNo}</span>
-        <span className="text-[14px] text-ink-2">{formatClock(order.createdAt)}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-[14px] text-ink-2">{formatClock(order.createdAt)}</span>
+          <BillQrButton order={order} />
+        </div>
       </div>
       {order.scannedAt ? (
         <Pill className="bg-ok-soft text-ok-ink" icon={<rect x="7" y="2" width="10" height="20" rx="2" />}>

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { formatBaht } from "@/domain/money";
 import { useOrder } from "@/lib/orders";
-import { BillQr } from "./bill-qr";
+import { BillQr } from "@/components/bill-qr";
 
 const noSubscribe = () => () => {};
 

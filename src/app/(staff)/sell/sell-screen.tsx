@@ -23,6 +23,7 @@ export function SellScreen({ today }: { today: string }) {
 
   const chips: { id: Filter; name: string }[] = [{ id: "all", name: "ทั้งหมด" }, ...categories];
   const shown = products.filter((p) => p.isAvailable && (filter === "all" || p.categoryId === filter));
+  const hasPhotos = shown.some((p) => p.imageUrl);
   const lines = cartLines(cart, products);
   const total = formatBaht(cartTotal(lines));
   if (billOpen && lines.length === 0) setBillOpen(false);
@@ -58,35 +59,56 @@ export function SellScreen({ today }: { today: string }) {
             })}
           </div>
 
-          <div className="grid grid-cols-2 content-start gap-3 md:grid-cols-3 lg:grid-cols-4">
+          <div
+            className={`grid content-start ${
+              hasPhotos
+                ? "grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] lg:gap-5"
+                : "grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4"
+            }`}
+          >
             {shown.map((p) => {
               const qty = cart.get(p.id) ?? 0;
-              return (
+              const badge = qty > 0 && (
+                <span className="absolute top-3 right-3 flex h-8 min-w-8 items-center justify-center rounded-full bg-accent px-2 text-[16px] font-bold text-white shadow-[0_2px_8px_rgba(28,29,26,0.25)]">
+                  {qty}
+                </span>
+              );
+              const price = (
+                <span className="flex items-baseline gap-1">
+                  <span className={`font-bold ${p.imageUrl ? "text-[24px] max-md:text-[20px]" : "text-[20px]"}`}>{formatBaht(p.price)}</span>
+                  <span className="text-[14px] text-ink-2">/ {p.unit}</span>
+                </span>
+              );
+              const ring = qty > 0 ? "border-accent bg-accent-tint" : "border-card bg-card";
+              return p.imageUrl ? (
                 <button
                   key={p.id}
                   type="button"
                   aria-label={`เพิ่ม ${p.name} ราคา ${p.price} บาท`}
                   onClick={() => dispatch({ type: "add", productId: p.id })}
-                  className={`relative flex min-w-0 cursor-pointer flex-col items-start rounded-[18px] border-2 text-left text-ink ${
-                    p.imageUrl ? "gap-2 p-2.5 pb-3.5" : "h-[124px] justify-between p-4"
-                  } ${qty > 0 ? "border-accent bg-accent-tint" : "border-card bg-card"}`}
+                  className={`relative flex h-full min-w-0 cursor-pointer flex-col rounded-[24px] border-2 p-3 text-left text-ink shadow-[0_1px_2px_rgba(28,29,26,0.06),0_8px_24px_rgba(28,29,26,0.06)] transition-transform active:scale-[0.98] max-md:rounded-[20px] max-md:p-2 ${ring}`}
                 >
-                  {p.imageUrl && (
-                    <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[12px] bg-ground">
-                      {/* Product photos may live in /public or Firebase Storage, so skip the optimizer's host allowlist. */}
-                      <Image src={p.imageUrl} alt="" fill unoptimized className="object-cover" />
-                    </span>
-                  )}
-                  <span className={`text-[19px] leading-[1.3] font-semibold ${p.imageUrl ? "px-1.5" : "pr-[30px]"}`}>{p.name}</span>
-                  <span className={`flex items-baseline gap-1 ${p.imageUrl ? "px-1.5" : ""}`}>
-                    <span className="text-[20px] font-bold">{formatBaht(p.price)}</span>
-                    <span className="text-[14px] text-ink-2">/ {p.unit}</span>
+                  <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[16px] bg-ground max-md:rounded-[14px]">
+                    {/* Product photos may live in /public or Firebase Storage, so skip the optimizer's host allowlist. */}
+                    <Image src={p.imageUrl} alt="" fill unoptimized sizes="(min-width: 1024px) 320px, 50vw" className="object-cover" />
+                    {badge}
                   </span>
-                  {qty > 0 && (
-                    <span className="absolute top-3 right-3 flex h-8 min-w-8 items-center justify-center rounded-full bg-accent px-2 text-[16px] font-bold text-white">
-                      {qty}
-                    </span>
-                  )}
+                  <span className="flex flex-1 flex-col gap-2 px-2 pt-3 pb-1 max-md:px-1 max-md:pt-2">
+                    <span className="line-clamp-2 text-[20px] leading-[1.3] font-semibold max-md:text-[17px]">{p.name}</span>
+                    <span className="mt-auto">{price}</span>
+                  </span>
+                </button>
+              ) : (
+                <button
+                  key={p.id}
+                  type="button"
+                  aria-label={`เพิ่ม ${p.name} ราคา ${p.price} บาท`}
+                  onClick={() => dispatch({ type: "add", productId: p.id })}
+                  className={`relative flex min-w-0 cursor-pointer flex-col items-start justify-between rounded-[18px] border-2 p-4 text-left text-ink ${hasPhotos ? "h-full min-h-[124px]" : "h-[124px]"} ${ring}`}
+                >
+                  <span className="pr-[30px] text-[19px] leading-[1.3] font-semibold">{p.name}</span>
+                  {price}
+                  {badge}
                 </button>
               );
             })}

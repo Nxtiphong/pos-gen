@@ -63,7 +63,7 @@ const NAV_ITEMS: { href: StaffSection; label: string; icon: ReactNode }[] = [
 function Badge({ count, className }: { count: number; className: string }) {
   if (!count) return null;
   return (
-    <span className={`absolute flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-[5px] text-xs font-bold text-white ${className}`}>
+    <span className={`absolute flex h-5 min-w-5 items-center justify-center rounded-full bg-blue px-[5px] text-xs font-bold text-white ${className}`}>
       {count}
     </span>
   );

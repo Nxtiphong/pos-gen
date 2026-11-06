@@ -155,7 +155,7 @@ export default function CheckoutPage() {
                 <Image src={PROMPTPAY_QR_SRC} alt="QR พร้อมเพย์ของร้าน" width={300} height={300} unoptimized className="size-[300px] max-md:size-[260px]" />
                 <figcaption className="text-[15px] font-semibold text-ink-2">สแกนจ่ายด้วยพร้อมเพย์</figcaption>
                 {PROMPTPAY_QR_IS_MOCK && (
-                  <span className="absolute -top-3 right-4 rounded-full bg-accent px-3 py-1 text-[13px] font-bold text-white">QR ตัวอย่าง</span>
+                  <span className="absolute -top-3 right-4 rounded-full bg-blue px-3 py-1 text-[13px] font-bold text-white">QR ตัวอย่าง</span>
                 )}
               </figure>
               <div className="flex min-w-0 flex-1 flex-col gap-3 max-lg:w-full">
@@ -187,7 +187,7 @@ export default function CheckoutPage() {
                     </output>
                   </div>
                 ) : (
-                  <div className="flex min-w-0 flex-col gap-0.5 rounded-[18px] bg-accent-soft px-5 py-4 text-accent-deep max-md:px-4">
+                  <div className="flex min-w-0 flex-col gap-0.5 rounded-[18px] bg-blue-soft px-5 py-4 text-blue-ink max-md:px-4">
                     <span className="text-[15px]">ยังขาดอีก</span>
                     <output aria-live="polite" className="text-[48px] leading-[1.15] font-bold max-md:text-[36px]">
                       {formatBaht(settlement.missing)}
@@ -248,7 +248,7 @@ export default function CheckoutPage() {
           )}
 
           {status === "failed" && (
-            <p role="alert" className="mt-auto rounded-[14px] bg-accent-soft px-4 py-3 text-[16px] font-semibold text-accent-deep">
+            <p role="alert" className="mt-auto rounded-[14px] bg-danger-soft px-4 py-3 text-[16px] font-semibold text-danger">
               บันทึกออเดอร์ไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วกดชำระเสร็จอีกครั้ง
             </p>
           )}

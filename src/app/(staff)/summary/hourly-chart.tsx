@@ -64,7 +64,7 @@ export function HourlyChart({ hourly }: { hourly: HourBucket[] }) {
                 {h > 0 && (
                   <path
                     d={`M${x0} ${PAD.top + plotH}V${yTop + r}Q${x0} ${yTop} ${x0 + r} ${yTop}H${x0 + barW - r}Q${x0 + barW} ${yTop} ${x0 + barW} ${yTop + r}V${PAD.top + plotH}Z`}
-                    fill={isPeak ? "var(--color-accent)" : "#8c918d"}
+                    fill={isPeak ? "var(--color-accent)" : "#9db5a5"}
                     opacity={active === null || active === i ? 1 : 0.55}
                   />
                 )}
@@ -103,7 +103,7 @@ export function HourlyChart({ hourly }: { hourly: HourBucket[] }) {
           className="pointer-events-none absolute -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-white shadow-lg"
         >
           <div className="text-[16px] font-bold">{money(shown.revenue)}</div>
-          <div className="text-[13px] text-[#c9ccc5]">
+          <div className="text-[13px] text-[#c5d3c9]">
             {hourLabel(shown.hour)}–{hourLabel(shown.hour + 1)} · {shown.billCount} บิล
           </div>
         </div>

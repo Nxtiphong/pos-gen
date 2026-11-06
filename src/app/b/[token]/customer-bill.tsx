@@ -134,7 +134,7 @@ function BillView({
     <Shell>
       {bill.status === "cancelled" ? (
         <section className="flex flex-col items-center gap-3 rounded-[28px] bg-card p-6 text-center">
-          <span aria-hidden="true" className="flex size-[72px] items-center justify-center rounded-full bg-[#FCE8E6] text-[#A3261B]">
+          <span aria-hidden="true" className="flex size-[72px] items-center justify-center rounded-full bg-danger-soft text-danger">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
@@ -162,8 +162,8 @@ function BillView({
         <section className="flex flex-col items-center gap-2.5 rounded-[28px] bg-card p-6 text-center">
           <span className="text-[15px] text-ink-2">หมายเลขออเดอร์</span>
           <span className="text-[92px] leading-none font-bold tracking-[-1px]">{bill.orderNo}</span>
-          <span role="status" className="flex h-9 items-center gap-2 rounded-full bg-accent-soft px-3.5 text-[15px] font-semibold text-accent-deep">
-            <span aria-hidden="true" className="wait-dot size-2.5 rounded-full bg-accent" />
+          <span role="status" className="flex h-9 items-center gap-2 rounded-full bg-blue-soft px-3.5 text-[15px] font-semibold text-blue-ink">
+            <span aria-hidden="true" className="wait-dot size-2.5 rounded-full bg-blue" />
             กำลังเตรียม · คิวก่อนหน้า {ahead} ออเดอร์
           </span>
           <p className="mt-1 text-[15px] leading-[1.5] text-ink-2">
@@ -318,7 +318,7 @@ function PushStatus({ state, onAsk }: { state: PushState; onAsk: () => void }) {
     <p
       role="status"
       className={`rounded-[18px] px-4 py-3.5 text-center text-[15px] leading-[1.5] font-semibold ${
-        tone === "ok" ? "bg-ok-soft text-ok-ink" : "bg-accent-soft text-accent-deep"
+        tone === "ok" ? "bg-ok-soft text-ok-ink" : "bg-blue-soft text-blue-ink"
       }`}
     >
       {text}

@@ -11,7 +11,7 @@ export function CancelOrderButton({ order, onConfirm }: { order: Order; onConfir
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="h-11 cursor-pointer self-center rounded-[12px] px-4 text-[15px] font-semibold text-[#A3261B] underline-offset-4 hover:underline"
+        className="h-11 cursor-pointer self-center rounded-[12px] px-4 text-[15px] font-semibold text-danger underline-offset-4 hover:underline"
       >
         ยกเลิกออเดอร์
       </button>
@@ -63,7 +63,7 @@ function ConfirmCancel({ order, onConfirm, onClose }: { order: Order; onConfirm:
               await onConfirm().finally(() => setSaving(false));
               ref.current?.close();
             }}
-            className="h-14 cursor-pointer rounded-[16px] bg-[#A3261B] text-[17px] font-bold text-white disabled:opacity-70"
+            className="h-14 cursor-pointer rounded-[16px] bg-danger text-[17px] font-bold text-white disabled:opacity-70"
           >
             {saving ? "กำลังยกเลิก…" : "ยกเลิกออเดอร์"}
           </button>

@@ -8,7 +8,7 @@ import { useCatalog, useCatalogActions } from "@/lib/catalog";
 type Errors = Partial<Record<ProductDraftField, string>>;
 
 const inputClass =
-  "h-14 w-full rounded-[14px] border bg-card px-4 text-[18px] text-ink focus:outline-3 focus:outline-offset-1 focus:outline-[#f4b28c]";
+  "h-14 w-full rounded-[14px] border bg-card px-4 text-[18px] text-ink focus:outline-3 focus:outline-offset-1 focus:outline-[#9fd1ae]";
 
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: React.ReactNode }) {
   return (
@@ -56,7 +56,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
   const fieldId = (f: string) => `${ids}-${f}`;
   const describe = (f: ProductDraftField) =>
     errors[f] ? { "aria-invalid": true, "aria-describedby": `${fieldId(f)}-error` } : {};
-  const borderFor = (f: ProductDraftField) => (errors[f] ? "border-accent" : "border-[#c9ccc5]");
+  const borderFor = (f: ProductDraftField) => (errors[f] ? "border-accent" : "border-[#c5d3c9]");
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -98,7 +98,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
       onClick={(e) => {
         if (e.target === dialogRef.current) dialogRef.current?.close();
       }}
-      className="m-auto w-[560px] max-w-[calc(100vw-32px)] rounded-[28px] bg-card p-0 text-ink shadow-[0_24px_64px_rgba(28,29,26,0.3)] backdrop:bg-ink/50 max-md:h-dvh max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-none"
+      className="m-auto w-[560px] max-w-[calc(100vw-32px)] rounded-[28px] bg-card p-0 text-ink shadow-[0_24px_64px_rgba(19,38,28,0.3)] backdrop:bg-ink/50 max-md:h-dvh max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-none"
     >
       <form noValidate onSubmit={submit} className="flex max-h-dvh flex-col gap-5 overflow-auto p-7 max-md:h-full max-md:px-4 max-md:pt-4 max-md:pb-[calc(16px+env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-between gap-3">
@@ -185,7 +185,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
                 setNewCategory("");
               }}
               className={`flex h-11 cursor-pointer items-center gap-1.5 rounded-full border px-4 text-[16px] ${
-                newCategory !== null ? "border-solid border-ink bg-ink font-semibold text-white" : "border-dashed border-[#a8ada9] bg-card font-medium text-[#4d514e]"
+                newCategory !== null ? "border-solid border-ink bg-ink font-semibold text-white" : "border-dashed border-[#a9bbaf] bg-card font-medium text-[#546359]"
               }`}
             >
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -223,7 +223,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
               // eslint-disable-next-line @next/next/no-img-element -- blob URL preview, next/image cannot optimise it
               <img src={preview} alt="ตัวอย่างรูปสินค้า" className="size-[88px] shrink-0 rounded-[16px] object-cover" />
             )}
-            <label className="relative flex h-[88px] flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-[16px] border-[1.5px] border-dashed border-[#a8ada9] bg-[#fafaf8] text-[16px] font-medium text-[#4d514e] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-[#f4b28c]">
+            <label className="relative flex h-[88px] flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-[16px] border-[1.5px] border-dashed border-[#a9bbaf] bg-[#f8fbf9] text-[16px] font-medium text-[#546359] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-[#9fd1ae]">
               <input
                 type="file"
                 accept="image/*"
@@ -246,7 +246,7 @@ export function AddProductDialog({ onClose }: { onClose: () => void }) {
         </div>
 
         {saveFailed && (
-          <p role="alert" className="rounded-[14px] bg-accent-soft px-4 py-3 text-[15px] font-semibold text-accent-deep">
+          <p role="alert" className="rounded-[14px] bg-danger-soft px-4 py-3 text-[15px] font-semibold text-danger">
             บันทึกสินค้าไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองอีกครั้ง
           </p>
         )}

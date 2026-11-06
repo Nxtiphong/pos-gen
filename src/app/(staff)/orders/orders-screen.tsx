@@ -64,7 +64,7 @@ export function OrdersScreen() {
           <div
             role="tablist"
             aria-label="สถานะออเดอร์"
-            className="flex gap-1 rounded-[16px] bg-[#e6e8e3] p-1 max-md:sticky max-md:top-0 max-md:z-10 max-md:grid max-md:grid-cols-4 max-md:shadow-[0_0_0_8px_var(--color-ground)]"
+            className="flex gap-1 rounded-[16px] bg-muted p-1 max-md:sticky max-md:top-0 max-md:z-10 max-md:grid max-md:grid-cols-4 max-md:shadow-[0_0_0_8px_var(--color-ground)]"
           >
             {TABS.map(({ status, label }) => {
               const on = status === tab;
@@ -78,13 +78,13 @@ export function OrdersScreen() {
                   aria-controls="orders-panel"
                   onClick={() => setTab(status)}
                   className={`flex h-11 cursor-pointer items-center gap-2 rounded-[12px] px-[18px] text-[16px] font-semibold max-md:h-auto max-md:min-h-[60px] max-md:min-w-0 max-md:flex-col-reverse max-md:justify-center max-md:gap-0.5 max-md:px-1 max-md:py-1.5 ${
-                    on ? "bg-card text-ink shadow-[0_1px_3px_rgba(28,29,26,0.12)]" : "bg-transparent text-[#4d514e]"
+                    on ? "bg-card text-ink shadow-[0_1px_3px_rgba(19,38,28,0.12)]" : "bg-transparent text-[#546359]"
                   }`}
                 >
                   <span className="whitespace-nowrap max-md:text-[13px] max-md:leading-tight">{label}</span>
                   <span
                     className={`flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[13px] max-md:h-auto max-md:min-w-0 max-md:bg-transparent max-md:px-0 max-md:text-[20px] max-md:leading-none max-md:font-bold ${
-                      on ? "bg-ink text-white max-md:text-accent" : "bg-[#d5d8d2] text-ink max-md:text-ink"
+                      on ? "bg-ink text-white max-md:text-accent" : "bg-muted-strong text-ink max-md:text-ink"
                     }`}
                   >
                     {counts[status]}
@@ -136,7 +136,7 @@ export function OrdersScreen() {
         <div
           key={toast.seq}
           role="status"
-          className="absolute bottom-7 left-1/2 ml-11 flex -translate-x-1/2 items-center gap-4 rounded-[18px] bg-ink py-3 pr-3 pl-5 whitespace-nowrap text-white shadow-[0_12px_32px_rgba(28,29,26,0.25)] max-md:right-4 max-md:bottom-[calc(var(--spacing-tabbar)+12px)] max-md:left-4 max-md:ml-0 max-md:translate-x-0 max-md:gap-3 max-md:whitespace-normal"
+          className="absolute bottom-7 left-1/2 ml-11 flex -translate-x-1/2 items-center gap-4 rounded-[18px] bg-ink py-3 pr-3 pl-5 whitespace-nowrap text-white shadow-[0_12px_32px_rgba(19,38,28,0.25)] max-md:right-4 max-md:bottom-[calc(var(--spacing-tabbar)+12px)] max-md:left-4 max-md:ml-0 max-md:translate-x-0 max-md:gap-3 max-md:whitespace-normal"
         >
           <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12l5 5 9-10" />
@@ -190,7 +190,7 @@ function OrderCard({
           ลูกค้าสแกนบิลแล้ว
         </Pill>
       ) : (
-        <Pill className="bg-accent-soft text-accent-deep" icon={<><path d="M12 8v5M12 16.5v.5" /><circle cx="12" cy="12" r="9" /></>}>
+        <Pill className="bg-blue-soft text-blue-ink" icon={<><path d="M12 8v5M12 16.5v.5" /><circle cx="12" cy="12" r="9" /></>}>
           ยังไม่สแกน · เรียกเลขด้วยเสียง
         </Pill>
       )}
@@ -265,7 +265,7 @@ function CardActions({
       );
     case "cancelled":
       return (
-        <span className="flex h-11 items-center justify-center rounded-[14px] bg-[#FCE8E6] text-[15px] font-semibold text-[#A3261B]">
+        <span className="flex h-11 items-center justify-center rounded-[14px] bg-danger-soft text-[15px] font-semibold text-danger">
           ยกเลิกแล้ว · {formatClock(order.cancelledAt)}
         </span>
       );

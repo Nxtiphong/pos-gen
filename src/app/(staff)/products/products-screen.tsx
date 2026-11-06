@@ -50,14 +50,14 @@ export function ProductsScreen() {
             {rows.map((p) => (
               <li
                 key={p.id}
-                className={`grid h-12 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-[#f0f1ee] max-md:h-auto max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-x-3 max-md:gap-y-1 max-md:rounded-[18px] max-md:border-b-0 max-md:bg-card max-md:p-4 ${
+                className={`grid h-12 grid-cols-[1fr_160px_120px_120px] items-center gap-4 border-b border-[#eaf1ec] max-md:h-auto max-md:grid-cols-[minmax(0,1fr)_auto] max-md:gap-x-3 max-md:gap-y-1 max-md:rounded-[18px] max-md:border-b-0 max-md:bg-card max-md:p-4 ${
                   p.isAvailable ? "text-ink" : "text-ink-2"
                 }`}
               >
                 <span className="flex min-w-0 flex-wrap items-center gap-2.5 text-[17px] font-semibold max-md:col-start-1">
                   {p.name}
                   {!p.isAvailable && (
-                    <span className="flex h-6 items-center rounded-full bg-[#f0f1ee] px-2 text-[12px] font-semibold text-ink-2">หมด</span>
+                    <span className="flex h-6 items-center rounded-full bg-[#eaf1ec] px-2 text-[12px] font-semibold text-ink-2">หมด</span>
                   )}
                 </span>
                 <span className="text-[15px] text-ink-2 max-md:col-start-1">{categoryName.get(p.categoryId)}</span>
@@ -75,10 +75,10 @@ export function ProductsScreen() {
                   >
                     <span
                       className={`flex h-[34px] w-14 items-center rounded-full p-[3px] ${
-                        p.isAvailable ? "justify-end bg-ok" : "justify-start bg-[#c9ccc5]"
+                        p.isAvailable ? "justify-end bg-ok" : "justify-start bg-[#c5d3c9]"
                       }`}
                     >
-                      <span className="size-7 rounded-full bg-white shadow-[0_1px_3px_rgba(28,29,26,0.3)]" />
+                      <span className="size-7 rounded-full bg-white shadow-[0_1px_3px_rgba(19,38,28,0.3)]" />
                     </span>
                   </button>
                 </span>

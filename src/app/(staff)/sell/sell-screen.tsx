@@ -69,7 +69,7 @@ export function SellScreen({ today }: { today: string }) {
             {shown.map((p) => {
               const qty = cart.get(p.id) ?? 0;
               const badge = qty > 0 && (
-                <span className="absolute top-3 right-3 flex h-8 min-w-8 items-center justify-center rounded-full bg-accent px-2 text-[16px] font-bold text-white shadow-[0_2px_8px_rgba(28,29,26,0.25)]">
+                <span className="absolute top-3 right-3 flex h-8 min-w-8 items-center justify-center rounded-full bg-blue px-2 text-[16px] font-bold text-white shadow-[0_2px_8px_rgba(19,38,28,0.25)]">
                   {qty}
                 </span>
               );
@@ -86,7 +86,7 @@ export function SellScreen({ today }: { today: string }) {
                   type="button"
                   aria-label={`เพิ่ม ${p.name} ราคา ${p.price} บาท`}
                   onClick={() => dispatch({ type: "add", productId: p.id })}
-                  className={`relative flex h-full min-w-0 cursor-pointer flex-col rounded-[24px] border-2 p-3 text-left text-ink shadow-[0_1px_2px_rgba(28,29,26,0.06),0_8px_24px_rgba(28,29,26,0.06)] transition-transform active:scale-[0.98] max-md:rounded-[20px] max-md:p-2 ${ring}`}
+                  className={`relative flex h-full min-w-0 cursor-pointer flex-col rounded-[24px] border-2 p-3 text-left text-ink shadow-[0_1px_2px_rgba(19,38,28,0.06),0_8px_24px_rgba(19,38,28,0.06)] transition-transform active:scale-[0.98] max-md:rounded-[20px] max-md:p-2 ${ring}`}
                 >
                   <span className="relative block aspect-[4/5] w-full overflow-hidden rounded-[16px] bg-ground max-md:rounded-[14px]">
                     {/* Product photos may live in /public or Firebase Storage, so skip the optimizer's host allowlist. */}

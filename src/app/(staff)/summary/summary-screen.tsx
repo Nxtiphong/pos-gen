@@ -75,7 +75,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
 
         <dl className="grid grid-cols-2 gap-3 md:grid-cols-6 lg:grid-cols-[1.3fr_1fr_1fr_0.8fr_0.8fr]">
           <div className="col-span-2 flex flex-col gap-1 rounded-[22px] bg-ink px-6 py-[22px] text-white max-md:px-5 max-md:py-4 lg:col-span-1">
-            <dt className="text-[16px] text-[#c9ccc5]">ยอดขายรวม</dt>
+            <dt className="text-[16px] text-[#c5d3c9]">ยอดขายรวม</dt>
             <dd data-testid="revenue" className="text-[44px] leading-[1.15] font-bold">{tile(money(summary.revenue))}</dd>
           </div>
           <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px] max-md:py-4 md:col-span-2 lg:col-span-1">
@@ -118,9 +118,9 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
                         </span>
                         <span className="w-[76px] text-right text-[18px] font-bold">{money(p.revenue)}</span>
                       </div>
-                      <div aria-hidden="true" className="ml-[30px] h-2 rounded-full bg-[#f0f1ee]">
+                      <div aria-hidden="true" className="ml-[30px] h-2 rounded-full bg-[#eaf1ec]">
                         <div
-                          className={`h-2 rounded-full ${i === 0 ? "bg-accent" : "bg-[#8c918d]"}`}
+                          className={`h-2 rounded-full ${i === 0 ? "bg-accent" : "bg-[#9db5a5]"}`}
                           style={{ width: `${Math.round((p.qty / maxQty) * 100)}%` }}
                         />
                       </div>

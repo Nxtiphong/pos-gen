@@ -18,7 +18,7 @@ export function BillQr({ url, label, size = 300 }: { url: string; label: string;
       shapeRendering="crispEdges"
       className="block max-md:size-[240px]"
     >
-      <path d={d} fill="#1c1d1a" />
+      <path d={d} fill="#13261c" />
     </svg>
   );
 }

@@ -9,14 +9,14 @@ const money = (n: number) => formatBaht(baht(n));
 
 const PAYMENT_STYLE: Record<PaymentMethod, string> = {
   cash: "bg-ground text-ink",
-  transfer: "bg-[#E8EEF9] text-[#1E3A8A]",
+  transfer: "bg-blue-soft text-blue-ink",
 };
 
 const STATUS_STYLE: Record<OrderStatus, string> = {
-  preparing: "bg-accent-soft text-accent-deep",
+  preparing: "bg-blue-soft text-blue-ink",
   notified: "bg-ok-soft text-ok-ink",
   picked_up: "bg-ground text-ink-2",
-  cancelled: "bg-[#FCE8E6] text-[#A3261B]",
+  cancelled: "bg-danger-soft text-danger",
 };
 
 function download(data: Ledger, date: string) {

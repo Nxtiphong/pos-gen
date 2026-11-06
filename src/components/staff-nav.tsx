@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { usePreparingQueue, useToday } from "@/lib/orders";
+import { LogoutButton } from "./logout-button";
 
 export type StaffSection = "/sell" | "/orders" | "/summary" | "/products";
 
@@ -101,6 +102,7 @@ export function StaffNav() {
             <Badge count={item.badge} className="top-1 right-2.5" />
           </Link>
         ))}
+        <LogoutButton variant="rail" />
       </nav>
       <nav
         aria-label="เมนูหลัก"
@@ -120,6 +122,7 @@ export function StaffNav() {
             <Badge count={item.badge} className="top-1 left-1/2 ml-2" />
           </Link>
         ))}
+        <LogoutButton variant="tab" />
       </nav>
     </>
   );

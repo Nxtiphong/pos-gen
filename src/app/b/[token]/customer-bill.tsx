@@ -5,7 +5,7 @@ import { ReadyScreen } from "@/components/customer/ready-screen";
 import { baht, formatBaht } from "@/domain/money";
 import { queueAhead, type Bill, type PublicToken } from "@/domain/order";
 import { itemsSummary } from "@/domain/queue";
-import { alertAudioContext, unlockAlertAudio, useAlertUnlocked } from "@/lib/alert-audio";
+import { alertAudioContext, readyAlertClip, unlockAlertAudio, useAlertUnlocked } from "@/lib/alert-audio";
 import { useBill, usePreparingQueue } from "@/lib/orders";
 import { enablePush, resubscribeIfGranted, type PushState } from "@/lib/push-client";
 import { startReadyAlert } from "@/lib/ready-alert";
@@ -82,7 +82,7 @@ function useReadyAlert(bill: Bill | null, unlocked: boolean): { ringing: boolean
 
   useEffect(() => {
     if (ringingFor === null) return;
-    return startReadyAlert(unlocked ? alertAudioContext() : null);
+    return startReadyAlert(unlocked ? alertAudioContext() : null, unlocked ? readyAlertClip() : null);
   }, [ringingFor, unlocked]);
 
   return { ringing: ringingFor !== null, stop: () => setRingingFor(null) };

@@ -32,20 +32,31 @@ function vibrate(pattern: number | number[]) {
   if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") navigator.vibrate(pattern);
 }
 
-export function startReadyAlert(ctx: AudioContext | null): () => void {
+function playClip(ctx: AudioContext, out: AudioNode, clip: AudioBuffer) {
+  const source = ctx.createBufferSource();
+  source.buffer = clip;
+  source.connect(out);
+  source.start(ctx.currentTime + 0.02);
+}
+
+export function startReadyAlert(ctx: AudioContext | null, clip: AudioBuffer | null = null): () => void {
   const master = ctx?.createGain();
   if (ctx && master) {
-    master.gain.value = 0.6;
+    master.gain.value = clip ? 1 : 0.6;
     master.connect(ctx.destination);
   }
 
   const cycle = () => {
-    if (ctx && master) beepCycle(ctx, master);
+    if (ctx && master) {
+      if (clip) playClip(ctx, master, clip);
+      else beepCycle(ctx, master);
+    }
     vibrate(READY_VIBRATION);
   };
 
   cycle();
-  const timer = setInterval(cycle, READY_ALERT_CYCLE_MS);
+  const cycleMs = clip ? Math.max(READY_ALERT_CYCLE_MS, Math.ceil(clip.duration * 1000) + 300) : READY_ALERT_CYCLE_MS;
+  const timer = setInterval(cycle, cycleMs);
 
   return () => {
     clearInterval(timer);

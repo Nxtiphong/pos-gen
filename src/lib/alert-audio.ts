@@ -3,7 +3,11 @@ import { useSyncExternalStore } from "react";
 type AudioContextCtor = typeof AudioContext;
 type AudioSessionNavigator = Navigator & { audioSession?: { type: string } };
 
+// Drop a custom alarm here; when the file is missing the alert falls back to generated beeps.
+export const READY_SOUND_SRC = "/sounds/ready.mp3";
+
 let context: AudioContext | null = null;
+let readyClip: AudioBuffer | null = null;
 let unlocked = false;
 let wakeLock: WakeLockSentinel | null = null;
 const listeners = new Set<() => void>();
@@ -61,6 +65,7 @@ export function unlockAlertAudio(): void {
     silent.start();
     if (context.state !== "running") context.resume().catch(() => {});
     confirmChime(context);
+    loadReadyClip(context);
   }
   if (typeof navigator.vibrate === "function") navigator.vibrate(200);
 
@@ -69,8 +74,22 @@ export function unlockAlertAudio(): void {
   setUnlocked(true);
 }
 
+function loadReadyClip(ctx: AudioContext) {
+  fetch(READY_SOUND_SRC)
+    .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject(new Error("no custom sound"))))
+    .then((bytes) => ctx.decodeAudioData(bytes))
+    .then((clip) => {
+      readyClip = clip;
+    })
+    .catch(() => {});
+}
+
 export function alertAudioContext(): AudioContext | null {
   return context;
+}
+
+export function readyAlertClip(): AudioBuffer | null {
+  return readyClip;
 }
 
 function subscribe(listener: () => void) {

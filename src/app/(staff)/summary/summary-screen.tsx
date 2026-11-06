@@ -50,7 +50,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
       <StaffNav />
 
       <main aria-busy={status === "loading"} className="flex min-w-0 flex-1 flex-col gap-5 overflow-y-auto p-6 max-md:p-4 max-md:pb-[calc(var(--spacing-tabbar)+16px)]">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h1 className="text-[28px] font-bold">{isToday ? "สรุปยอดวันนี้" : "สรุปยอดรายวัน"}</h1>
             <span className="text-[15px] text-ink-2">{formatThaiDate(startOfBusinessDate(date))}</span>
@@ -73,26 +73,26 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
           </div>
         </div>
 
-        <dl className="grid grid-cols-[1.3fr_1fr_1fr_0.8fr_0.8fr] gap-3">
-          <div className="flex flex-col gap-1 rounded-[22px] bg-ink px-6 py-[22px] text-white">
+        <dl className="grid grid-cols-2 gap-3 md:grid-cols-6 lg:grid-cols-[1.3fr_1fr_1fr_0.8fr_0.8fr]">
+          <div className="col-span-2 flex flex-col gap-1 rounded-[22px] bg-ink px-6 py-[22px] text-white max-md:px-5 max-md:py-4 lg:col-span-1">
             <dt className="text-[16px] text-[#c9ccc5]">ยอดขายรวม</dt>
             <dd data-testid="revenue" className="text-[44px] leading-[1.15] font-bold">{tile(money(summary.revenue))}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px] max-md:py-4 md:col-span-2 lg:col-span-1">
             <dt className="text-[16px] text-ink-2">เงินสด</dt>
-            <dd data-testid="cash" className="text-[36px] leading-[1.2] font-bold">{tile(money(bills.totals.cash))}</dd>
+            <dd data-testid="cash" className="text-[36px] leading-[1.2] font-bold max-md:text-[28px]">{tile(money(bills.totals.cash))}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px] max-md:py-4 md:col-span-2 lg:col-span-1">
             <dt className="text-[16px] text-ink-2">เงินโอน</dt>
-            <dd data-testid="transfer" className="text-[36px] leading-[1.2] font-bold">{tile(money(bills.totals.transfer))}</dd>
+            <dd data-testid="transfer" className="text-[36px] leading-[1.2] font-bold max-md:text-[28px]">{tile(money(bills.totals.transfer))}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px] max-md:py-4 md:col-span-3 lg:col-span-1">
             <dt className="text-[16px] text-ink-2">จำนวนบิล</dt>
-            <dd data-testid="bills" className="text-[36px] leading-[1.2] font-bold">{tile(summary.billCount)}</dd>
+            <dd data-testid="bills" className="text-[36px] leading-[1.2] font-bold max-md:text-[28px]">{tile(summary.billCount)}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px] max-md:py-4 md:col-span-3 lg:col-span-1">
             <dt className="text-[16px] text-ink-2">ชิ้นที่ขายได้</dt>
-            <dd data-testid="items" className="text-[36px] leading-[1.2] font-bold">{tile(summary.itemCount)}</dd>
+            <dd data-testid="items" className="text-[36px] leading-[1.2] font-bold max-md:text-[28px]">{tile(summary.itemCount)}</dd>
           </div>
         </dl>
 
@@ -104,15 +104,15 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
           <Notice title="ยังไม่มียอดขายในวันนี้" hint="เมื่อมีการขาย ยอดและสินค้าขายดีจะแสดงที่นี่" />
         ) : (
           <>
-            <div className="grid h-[460px] shrink-0 grid-cols-2 gap-3.5">
-              <section className="flex flex-col gap-[18px] rounded-[22px] bg-card p-6">
+            <div className="grid shrink-0 grid-cols-1 gap-3.5 lg:h-[460px] lg:grid-cols-2">
+              <section className="flex flex-col gap-[18px] rounded-[22px] bg-card p-6 max-md:p-5">
                 <h2 className="text-[20px] font-bold">สินค้าขายดี 5 อันดับ</h2>
                 <ol data-testid="top-list" className="flex flex-col gap-[18px]">
                   {summary.topProducts.map((p, i) => (
                     <li key={p.productId} className="flex flex-col gap-2">
                       <div className="flex items-baseline gap-2.5">
                         <span className="w-5 text-[15px] font-bold text-ink-2">{i + 1}</span>
-                        <span className="flex-1 text-[18px] font-semibold">{p.name}</span>
+                        <span className="min-w-0 flex-1 text-[18px] font-semibold">{p.name}</span>
                         <span className="text-[15px] text-ink-2">
                           ขายได้ {p.qty} {unitWord(unitOf.get(p.productId))}
                         </span>
@@ -129,7 +129,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
                 </ol>
               </section>
 
-              <section className="flex min-h-0 flex-col gap-3 rounded-[22px] bg-card p-6">
+              <section className="flex min-h-0 flex-col gap-3 rounded-[22px] bg-card p-6 max-lg:h-[400px] max-md:h-[320px] max-md:p-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="text-[20px] font-bold">ยอดขายรายชั่วโมง</h2>
                   {peak && <span className="text-[14px] text-ink-2">ขายดีสุด {hourLabel(peak.hour)}–{hourLabel(peak.hour + 1)}</span>}

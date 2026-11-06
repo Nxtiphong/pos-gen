@@ -32,8 +32,8 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
   const { rows, totals } = data;
   const num = "px-4 py-3 text-right whitespace-nowrap";
   return (
-    <section aria-labelledby="bills-title" className="flex flex-col gap-4 rounded-[22px] bg-card p-6">
-      <div className="flex items-center justify-between gap-3">
+    <section aria-labelledby="bills-title" className="flex min-w-0 flex-col gap-4 rounded-[22px] bg-card p-6 max-md:p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="bills-title" className="text-[20px] font-bold">
           รายละเอียดบิล <span className="text-[16px] font-medium text-ink-2">({rows.length} บิล)</span>
         </h2>
@@ -68,7 +68,7 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
               <tr key={r.id} className="border-t border-line-soft">
                 <th scope="row" className="px-4 py-3 text-left font-bold">{r.orderNo}</th>
                 <td className="px-4 py-3 whitespace-nowrap text-ink-2">{formatClock(r.createdAt)}</td>
-                <td className="px-4 py-3">{r.items}</td>
+                <td className="px-4 py-3 max-lg:min-w-[220px]">{r.items}</td>
                 <td className={num}>{r.itemCount}</td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex h-7 items-center rounded-full px-2.5 text-[13px] font-semibold whitespace-nowrap ${PAYMENT_STYLE[r.paymentMethod]}`}>

@@ -1,9 +1,9 @@
-import { adminDb } from "@/lib/firebase/admin";
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const present = (name: string) => Boolean(process.env[name]);
+
+const firstLine = (error: unknown) => (error instanceof Error ? error.message.split("\n")[0].slice(0, 200) : String(error));
 
 export async function GET() {
   const env = {
@@ -13,12 +13,14 @@ export async function GET() {
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: present("NEXT_PUBLIC_VAPID_PUBLIC_KEY"),
     VAPID_PRIVATE_KEY: present("VAPID_PRIVATE_KEY"),
   };
+  // Imported lazily so a module that fails to load is reported here instead of crashing the route.
   let firestore: string;
   try {
+    const { adminDb } = await import("@/lib/firebase/admin");
     await adminDb().doc("health/probe").get();
     firestore = "ok";
   } catch (error) {
-    firestore = error instanceof Error ? error.message.split("\n")[0].slice(0, 120) : "error";
+    firestore = firstLine(error);
   }
-  return Response.json({ env, firestore }, { status: firestore === "ok" ? 200 : 500 });
+  return Response.json({ env, node: process.version, firestore }, { status: firestore === "ok" ? 200 : 500 });
 }

@@ -16,7 +16,7 @@ export function BillQr({ url, label, size = 300 }: { url: string; label: string;
       height={size}
       viewBox={`0 0 ${modules.size} ${modules.size}`}
       shapeRendering="crispEdges"
-      className="block"
+      className="block max-md:size-[240px]"
     >
       <path d={d} fill="#1c1d1a" />
     </svg>

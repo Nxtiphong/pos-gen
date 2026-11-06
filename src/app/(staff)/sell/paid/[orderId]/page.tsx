@@ -33,54 +33,54 @@ export default function PaidPage() {
   const { orderNo, total, cashReceived, change, publicToken, paymentMethod } = order.value;
 
   return (
-    <div className="flex h-dvh items-stretch gap-8 overflow-hidden bg-ground p-10 text-ink">
-      <section className="flex min-w-0 flex-1 flex-col justify-center gap-7 px-6">
+    <div className="flex min-h-dvh flex-col gap-8 bg-ground p-10 text-ink max-md:gap-6 max-md:px-4 max-md:py-6 lg:h-dvh lg:flex-row lg:items-stretch lg:overflow-hidden">
+      <section className="flex min-w-0 flex-1 flex-col justify-center gap-7 px-6 max-md:gap-5 max-md:px-0">
         <div className="flex items-center gap-3.5">
           <span aria-hidden="true" className="flex size-[52px] items-center justify-center rounded-full bg-ok text-white">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12l5 5 9-10" />
             </svg>
           </span>
-          <h1 className="text-[30px] font-bold">ชำระเงินเรียบร้อย</h1>
+          <h1 className="text-[30px] font-bold max-md:text-[24px]">ชำระเงินเรียบร้อย</h1>
         </div>
 
         <div className="flex flex-col">
           <span className="text-[20px] text-ink-2">หมายเลขออเดอร์</span>
-          <span className="text-[148px] leading-none font-bold tracking-[-2px]">{orderNo}</span>
+          <span className="text-[148px] leading-none font-bold tracking-[-2px] max-md:text-[96px]">{orderNo}</span>
         </div>
 
         <dl className="grid max-w-[520px] grid-cols-3 gap-3">
-          <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5">
+          <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5 max-md:px-3">
             <dt className="text-[14px] text-ink-2">ยอด</dt>
-            <dd className="text-[28px] font-bold">{formatBaht(total)}</dd>
+            <dd className="text-[28px] font-bold max-md:text-[22px]">{formatBaht(total)}</dd>
           </div>
           {paymentMethod === "transfer" ? (
-            <div className="col-span-2 flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink">
+            <div className="col-span-2 flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink max-md:px-3">
               <dt className="text-[14px]">ชำระโดย</dt>
-              <dd className="text-[28px] font-bold">เงินโอน</dd>
+              <dd className="text-[28px] font-bold max-md:text-[22px]">เงินโอน</dd>
             </div>
           ) : (
             <>
-              <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5">
+              <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5 max-md:px-3">
                 <dt className="text-[14px] text-ink-2">รับเงินสด</dt>
-                <dd className="text-[28px] font-bold">{formatBaht(cashReceived)}</dd>
+                <dd className="text-[28px] font-bold max-md:text-[22px]">{formatBaht(cashReceived)}</dd>
               </div>
-              <div className="flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink">
+              <div className="flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink max-md:px-3">
                 <dt className="text-[14px]">เงินทอน</dt>
-                <dd className="text-[28px] font-bold">{formatBaht(change)}</dd>
+                <dd className="text-[28px] font-bold max-md:text-[22px]">{formatBaht(change)}</dd>
               </div>
             </>
           )}
         </dl>
 
         <div className="flex flex-wrap gap-3">
-          <Link href="/sell" className="flex h-16 items-center gap-2.5 rounded-[18px] bg-accent px-8 text-[20px] font-bold text-white">
+          <Link href="/sell" className="flex h-16 items-center justify-center gap-2.5 rounded-[18px] bg-accent px-8 text-[20px] font-bold text-white max-md:w-full">
             <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M5 12h14M12 5v14" />
             </svg>
             เริ่มออเดอร์ถัดไป
           </Link>
-          <Link href="/orders" className="flex h-16 items-center rounded-[18px] border border-line bg-card px-7 text-[18px] font-semibold text-ink">
+          <Link href="/orders" className="flex h-16 items-center justify-center rounded-[18px] border border-line bg-card px-7 text-[18px] font-semibold text-ink max-md:w-full">
             ดูคิวออเดอร์
           </Link>
         </div>
@@ -88,13 +88,13 @@ export default function PaidPage() {
 
       <section
         aria-label="QR บิลสำหรับลูกค้า"
-        className="flex w-[460px] shrink-0 flex-col items-center justify-center gap-6 rounded-[28px] bg-card p-9 text-center"
+        className="flex shrink-0 flex-col items-center justify-center gap-6 rounded-[28px] bg-card p-9 text-center max-md:gap-4 max-md:p-5 lg:w-[460px]"
       >
         <div className="flex flex-col gap-1.5">
           <h2 className="text-[26px] font-bold">สแกนเพื่อดูบิล</h2>
           <p className="text-[17px] text-ink-2">แล้วรอรับแจ้งเตือนบนมือถือเมื่อของพร้อม</p>
         </div>
-        <div className="rounded-[24px] border-2 border-ink bg-card p-5">
+        <div className="rounded-[24px] border-2 border-ink bg-card p-5 max-md:p-4">
           <BillQr url={`${origin}/b/${publicToken}`} label={`QR บิลออเดอร์ ${orderNo}`} />
         </div>
         <div className="flex items-center gap-2.5 text-[16px] text-ink-2">

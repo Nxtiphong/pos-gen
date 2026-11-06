@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ import { useCart } from "@/lib/cart-context";
 import { useCatalog } from "@/lib/catalog";
 import { useNextOrderNo } from "@/lib/orders";
 import { useCompleteSale } from "@/lib/sale";
+import { PROMPTPAY_QR_IS_MOCK, PROMPTPAY_QR_SRC } from "@/lib/shop";
 
 const KEYS: readonly CashKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "00", "0", "back"];
 
@@ -148,14 +150,25 @@ export default function CheckoutPage() {
 
         <section aria-label="รับเงิน" className="flex min-w-0 flex-1 flex-col gap-4 rounded-[24px] bg-card p-6">
           {method === "transfer" ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-0.5 rounded-[18px] border-2 border-ink px-5 py-3.5">
-                <span className="text-[15px] text-ink-2">ยอดที่ลูกค้าต้องโอน</span>
-                <output className="text-[48px] leading-[1.15] font-bold">{formatBaht(total)}</output>
+            <div className="flex min-h-0 flex-1 items-center gap-6">
+              <figure className="relative flex shrink-0 flex-col items-center gap-2 rounded-[22px] border-2 border-ink bg-card p-4">
+                <Image src={PROMPTPAY_QR_SRC} alt="QR พร้อมเพย์ของร้าน" width={300} height={300} unoptimized className="size-[300px]" />
+                <figcaption className="text-[15px] font-semibold text-ink-2">สแกนจ่ายด้วยพร้อมเพย์</figcaption>
+                {PROMPTPAY_QR_IS_MOCK && (
+                  <span className="absolute -top-3 right-4 rounded-full bg-accent px-3 py-1 text-[13px] font-bold text-white">QR ตัวอย่าง</span>
+                )}
+              </figure>
+              <div className="flex min-w-0 flex-1 flex-col gap-3">
+                <div className="flex flex-col gap-0.5 rounded-[18px] bg-ground px-5 py-4">
+                  <span className="text-[16px] text-ink-2">ยอดที่ลูกค้าต้องโอน</span>
+                  <output aria-live="polite" className="text-[64px] leading-[1.1] font-bold">
+                    {formatBaht(total)}
+                  </output>
+                </div>
+                <p className="text-[17px] leading-[1.6] text-ink-2">
+                  ให้ลูกค้าสแกน QR แล้วโอน <b className="text-ink">{formatBaht(total)}</b> จากนั้นดูสลิปหรือตรวจยอดเข้าในแอปธนาคารก่อนกดยืนยัน
+                </p>
               </div>
-              <p className="rounded-[18px] bg-ground px-5 py-4 text-[17px] leading-[1.6] text-ink-2">
-                ให้ลูกค้าโอนเข้าบัญชีร้าน แล้วตรวจยอดเงินเข้าในแอปธนาคารให้ตรง {formatBaht(total)} ก่อนกดยืนยัน
-              </p>
             </div>
           ) : (
             <>

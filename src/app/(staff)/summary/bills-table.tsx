@@ -2,10 +2,15 @@
 
 import { STATUS_LABEL, ledgerCsv, type Ledger } from "@/domain/ledger";
 import { baht, formatBaht } from "@/domain/money";
-import type { OrderStatus } from "@/domain/order";
+import { PAYMENT_LABEL, type OrderStatus, type PaymentMethod } from "@/domain/order";
 import { formatClock } from "@/lib/thai-date";
 
 const money = (n: number) => formatBaht(baht(n));
+
+const PAYMENT_STYLE: Record<PaymentMethod, string> = {
+  cash: "bg-ground text-ink",
+  transfer: "bg-[#E8EEF9] text-[#1E3A8A]",
+};
 
 const STATUS_STYLE: Record<OrderStatus, string> = {
   preparing: "bg-accent-soft text-accent-deep",
@@ -51,6 +56,7 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
               <th scope="col" className="px-4 py-3 text-left font-semibold">เวลา</th>
               <th scope="col" className="px-4 py-3 text-left font-semibold">รายการ</th>
               <th scope="col" className={`${num} font-semibold`}>ชิ้น</th>
+              <th scope="col" className="px-4 py-3 text-left font-semibold">ช่องทาง</th>
               <th scope="col" className={`${num} font-semibold`}>ยอด</th>
               <th scope="col" className={`${num} font-semibold`}>รับเงิน</th>
               <th scope="col" className={`${num} font-semibold`}>เงินทอน</th>
@@ -64,6 +70,11 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
                 <td className="px-4 py-3 whitespace-nowrap text-ink-2">{formatClock(r.createdAt)}</td>
                 <td className="px-4 py-3">{r.items}</td>
                 <td className={num}>{r.itemCount}</td>
+                <td className="px-4 py-3">
+                  <span className={`inline-flex h-7 items-center rounded-full px-2.5 text-[13px] font-semibold whitespace-nowrap ${PAYMENT_STYLE[r.paymentMethod]}`}>
+                    {PAYMENT_LABEL[r.paymentMethod]}
+                  </span>
+                </td>
                 <td className={`${num} font-bold`}>{money(r.total)}</td>
                 <td className={num}>{money(r.cashReceived)}</td>
                 <td className={num}>{money(r.change)}</td>
@@ -81,6 +92,9 @@ export function BillsTable({ data, date }: { data: Ledger; date: string }) {
                 รวม
               </th>
               <td className={num}>{totals.itemCount}</td>
+              <td className="px-4 py-3 text-[13px] font-semibold whitespace-nowrap text-ink-2">
+                สด {money(totals.cash)} · โอน {money(totals.transfer)}
+              </td>
               <td className={num}>{money(totals.total)}</td>
               <td className={num}>{money(totals.cashReceived)}</td>
               <td className={num}>{money(totals.change)}</td>

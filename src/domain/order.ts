@@ -20,8 +20,13 @@ export type OrderProgress =
   | { status: "notified"; notifyCount: number; notifiedAt: Date }
   | { status: "picked_up"; notifyCount: number; notifiedAt?: Date; pickedUpAt: Date };
 
+export type PaymentMethod = "cash" | "transfer";
+
+export const PAYMENT_LABEL: Record<PaymentMethod, string> = { cash: "เงินสด", transfer: "เงินโอน" };
+
 type Receipt = {
   orderNo: OrderNo;
+  paymentMethod: PaymentMethod;
   businessDate: BusinessDate;
   lines: readonly OrderLine[];
   total: Baht;

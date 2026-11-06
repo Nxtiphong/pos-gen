@@ -15,9 +15,12 @@ Next.js 15 App Router on Vercel. Firestore is the database and the realtime chan
 | `categories/{id}` | name, sortOrder | staff, customer never | staff |
 | `products/{id}` | name, price (integer baht), unit, categoryId, imageUrl? (Storage download URL of `products/{id}/{filename}`), isAvailable, sortOrder | staff | staff |
 | `counters/{businessDate}` | next (int) | staff | staff, in the create-order transaction |
-| `orders/{id}` | orderNo, businessDate, publicToken, lines[], itemCount, total, cashReceived, change, status, createdAt, scannedAt?, notifiedAt?, notifyCount, pickedUpAt? | staff | staff; admin for scannedAt |
-| `bills/{publicToken}` | orderId, orderNo, businessDate, lines[], total, cashReceived, change, status, createdAt, notifiedAt?, notifyCount, scannedAt? | anyone by exact id (`get`, never `list`) | staff; admin for scannedAt |
+| `orders/{id}` | orderNo, businessDate, publicToken, lines[], itemCount, total, paymentMethod, cashReceived, change, status, createdAt, scannedAt?, notifiedAt?, notifyCount, pickedUpAt? | staff | staff; admin for scannedAt |
+| `bills/{publicToken}` | orderId, orderNo, businessDate, lines[], total, paymentMethod, cashReceived, change, status, createdAt, notifiedAt?, notifyCount, scannedAt? | anyone by exact id (`get`, never `list`) | staff; admin for scannedAt |
 | `queues/{businessDate}` | preparing: orderNo[] in creation order | anyone by exact id | staff |
+| `pushSubscriptions/{publicToken}` | subscription (Web Push endpoint + keys), updatedAt | nobody (server only) | admin, from `POST /api/bills/{token}/push` |
+
+`paymentMethod` is `cash | transfer`; a missing value means cash (orders saved before transfers existed). A transfer stores `cashReceived = total` and `change = 0`.
 
 `lines[]` items are `{ productId, name, price, qty }`, snapshots taken at sale time.
 

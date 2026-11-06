@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import type { Baht } from "@/domain/money";
-import type { OrderId, OrderLine } from "@/domain/order";
+import type { OrderId, OrderLine, PaymentMethod } from "@/domain/order";
 import { useCart } from "./cart-context";
 import { getDb } from "./firebase/client";
 import { createOrder, newOrderId } from "./orders";
@@ -9,6 +9,7 @@ import { createOrder, newOrderId } from "./orders";
 export type Sale = {
   lines: readonly OrderLine[];
   total: Baht;
+  paymentMethod: PaymentMethod;
   cashReceived: Baht;
   change: Baht;
 };

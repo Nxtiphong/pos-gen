@@ -1,4 +1,4 @@
-import type { Order, OrderStatus } from "./order";
+import { PAYMENT_LABEL, type Order, type OrderStatus, type PaymentMethod } from "./order";
 import { itemsSummary } from "./queue";
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {
@@ -13,6 +13,7 @@ export type LedgerRow = {
   createdAt: Date;
   items: string;
   itemCount: number;
+  paymentMethod: PaymentMethod;
   total: number;
   cashReceived: number;
   change: number;
@@ -21,7 +22,7 @@ export type LedgerRow = {
 
 export type Ledger = {
   rows: LedgerRow[];
-  totals: { itemCount: number; total: number; cashReceived: number; change: number };
+  totals: { itemCount: number; total: number; cash: number; transfer: number; cashReceived: number; change: number };
 };
 
 export function ledger(orders: readonly Order[]): Ledger {
@@ -33,6 +34,7 @@ export function ledger(orders: readonly Order[]): Ledger {
       createdAt: o.createdAt,
       items: itemsSummary(o.lines),
       itemCount: o.itemCount,
+      paymentMethod: o.paymentMethod,
       total: o.total,
       cashReceived: o.cashReceived,
       change: o.change,
@@ -44,6 +46,8 @@ export function ledger(orders: readonly Order[]): Ledger {
     totals: {
       itemCount: sum((r) => r.itemCount),
       total: sum((r) => r.total),
+      cash: sum((r) => (r.paymentMethod === "cash" ? r.total : 0)),
+      transfer: sum((r) => (r.paymentMethod === "transfer" ? r.total : 0)),
       cashReceived: sum((r) => r.cashReceived),
       change: sum((r) => r.change),
     },
@@ -57,11 +61,11 @@ const csvCell = (value: string | number) => {
 
 // Excel opens UTF-8 CSV as Thai only when the file starts with a byte order mark.
 export function ledgerCsv(data: Ledger, formatTime: (d: Date) => string): string {
-  const header = ["เลขบิล", "เวลา", "รายการ", "จำนวนชิ้น", "ยอด", "รับเงิน", "เงินทอน", "สถานะ"];
+  const header = ["เลขบิล", "เวลา", "รายการ", "จำนวนชิ้น", "ช่องทาง", "ยอด", "รับเงิน", "เงินทอน", "สถานะ"];
   const lines = data.rows.map((r) =>
-    [r.orderNo, formatTime(r.createdAt), r.items, r.itemCount, r.total, r.cashReceived, r.change, STATUS_LABEL[r.status]],
+    [r.orderNo, formatTime(r.createdAt), r.items, r.itemCount, PAYMENT_LABEL[r.paymentMethod], r.total, r.cashReceived, r.change, STATUS_LABEL[r.status]],
   );
   const { totals } = data;
-  const footer = ["รวม", "", "", totals.itemCount, totals.total, totals.cashReceived, totals.change, ""];
-  return "﻿" + [header, ...lines, footer].map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
+  const footer = ["รวม", "", "", totals.itemCount, "", totals.total, totals.cashReceived, totals.change, ""];
+  return "\uFEFF" + [header, ...lines, footer].map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
 }

@@ -181,14 +181,23 @@ function BillView({
           <span className="text-[16px] font-semibold">รวม</span>
           <span className="text-[26px] font-bold">{formatBaht(bill.total)}</span>
         </div>
-        <div className="flex justify-between text-[14px] text-ink-2">
-          <span>รับเงินสด</span>
-          <span>{formatBaht(bill.cashReceived)}</span>
-        </div>
-        <div className="flex justify-between text-[14px] text-ink-2">
-          <span>เงินทอน</span>
-          <span>{formatBaht(bill.change)}</span>
-        </div>
+        {bill.paymentMethod === "transfer" ? (
+          <div className="flex justify-between text-[14px] text-ink-2">
+            <span>ชำระโดย</span>
+            <span>เงินโอน</span>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-between text-[14px] text-ink-2">
+              <span>รับเงินสด</span>
+              <span>{formatBaht(bill.cashReceived)}</span>
+            </div>
+            <div className="flex justify-between text-[14px] text-ink-2">
+              <span>เงินทอน</span>
+              <span>{formatBaht(bill.change)}</span>
+            </div>
+          </>
+        )}
         <div className="h-px bg-line" />
         <span className="text-center text-[13px] text-ink-2">{formatBillDateTime(bill.createdAt)}</span>
       </section>

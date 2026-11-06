@@ -19,6 +19,7 @@ function order(orderNo: string, progress: OrderProgress = preparing, created = "
     lines: [{ productId: "p1" as ProductId, name: "หมูปิ้ง", qty: 1, price: baht(10) }],
     itemCount: 1,
     total: baht(10),
+    paymentMethod: "cash",
     cashReceived: baht(10),
     change: baht(0),
     createdAt: at(created),

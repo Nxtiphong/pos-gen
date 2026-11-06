@@ -13,6 +13,8 @@ import { BillsTable } from "./bills-table";
 import { HourlyChart, peakOf } from "./hourly-chart";
 
 const money = (n: number) => formatBaht(baht(n));
+// A unit typed as a number (e.g. "1") reads as a second quantity, so fall back to a generic noun.
+const unitWord = (unit: string | undefined) => (unit && /\D/.test(unit) ? unit : "ชิ้น");
 const hourLabel = (hour: number) => `${String(hour).padStart(2, "0")}:00`;
 
 function Chevron({ direction }: { direction: "left" | "right" }) {
@@ -71,18 +73,26 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
           </div>
         </div>
 
-        <dl className="grid grid-cols-[1.4fr_1fr_1fr] gap-3.5">
+        <dl className="grid grid-cols-[1.3fr_1fr_1fr_0.8fr_0.8fr] gap-3">
           <div className="flex flex-col gap-1 rounded-[22px] bg-ink px-6 py-[22px] text-white">
-            <dt className="text-[16px] text-[#c9ccc5]">ยอดขายรวม (เงินสด)</dt>
-            <dd data-testid="revenue" className="text-[52px] leading-[1.1] font-bold">{tile(money(summary.revenue))}</dd>
+            <dt className="text-[16px] text-[#c9ccc5]">ยอดขายรวม</dt>
+            <dd data-testid="revenue" className="text-[44px] leading-[1.15] font-bold">{tile(money(summary.revenue))}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-6 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+            <dt className="text-[16px] text-ink-2">เงินสด</dt>
+            <dd data-testid="cash" className="text-[36px] leading-[1.2] font-bold">{tile(money(bills.totals.cash))}</dd>
+          </div>
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
+            <dt className="text-[16px] text-ink-2">เงินโอน</dt>
+            <dd data-testid="transfer" className="text-[36px] leading-[1.2] font-bold">{tile(money(bills.totals.transfer))}</dd>
+          </div>
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
             <dt className="text-[16px] text-ink-2">จำนวนบิล</dt>
-            <dd data-testid="bills" className="text-[44px] leading-[1.15] font-bold">{tile(summary.billCount)}</dd>
+            <dd data-testid="bills" className="text-[36px] leading-[1.2] font-bold">{tile(summary.billCount)}</dd>
           </div>
-          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-6 py-[22px]">
+          <div className="flex flex-col gap-1 rounded-[22px] bg-card px-5 py-[22px]">
             <dt className="text-[16px] text-ink-2">ชิ้นที่ขายได้</dt>
-            <dd data-testid="items" className="text-[44px] leading-[1.15] font-bold">{tile(summary.itemCount)}</dd>
+            <dd data-testid="items" className="text-[36px] leading-[1.2] font-bold">{tile(summary.itemCount)}</dd>
           </div>
         </dl>
 
@@ -104,7 +114,7 @@ export function SummaryScreen({ today }: { today: BusinessDate }) {
                         <span className="w-5 text-[15px] font-bold text-ink-2">{i + 1}</span>
                         <span className="flex-1 text-[18px] font-semibold">{p.name}</span>
                         <span className="text-[15px] text-ink-2">
-                          {p.qty} {unitOf.get(p.productId) ?? ""}
+                          ขายได้ {p.qty} {unitWord(unitOf.get(p.productId))}
                         </span>
                         <span className="w-[76px] text-right text-[18px] font-bold">{money(p.revenue)}</span>
                       </div>

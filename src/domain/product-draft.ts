@@ -43,6 +43,7 @@ export function parseProductDraft(input: ProductDraftInput): ProductDraftResult 
   const unit = input.unit.trim();
   if (unit.length === 0) errors.unit = "กรุณาใส่หน่วย";
   else if (unit.length > MAX_UNIT) errors.unit = `หน่วยยาวเกิน ${MAX_UNIT} ตัวอักษร`;
+  else if (/^[\d\s.,]+$/.test(unit)) errors.unit = "หน่วยต้องเป็นคำ เช่น แก้ว ไม้ ห่อ";
 
   const newCategory = input.newCategoryName?.trim() ?? "";
   let category: ProductDraft["category"] | undefined;

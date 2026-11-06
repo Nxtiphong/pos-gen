@@ -30,7 +30,7 @@ export default function PaidPage() {
     );
   }
 
-  const { orderNo, total, cashReceived, change, publicToken } = order.value;
+  const { orderNo, total, cashReceived, change, publicToken, paymentMethod } = order.value;
 
   return (
     <div className="flex h-dvh items-stretch gap-8 overflow-hidden bg-ground p-10 text-ink">
@@ -54,14 +54,23 @@ export default function PaidPage() {
             <dt className="text-[14px] text-ink-2">ยอด</dt>
             <dd className="text-[28px] font-bold">{formatBaht(total)}</dd>
           </div>
-          <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5">
-            <dt className="text-[14px] text-ink-2">รับมา</dt>
-            <dd className="text-[28px] font-bold">{formatBaht(cashReceived)}</dd>
-          </div>
-          <div className="flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink">
-            <dt className="text-[14px]">เงินทอน</dt>
-            <dd className="text-[28px] font-bold">{formatBaht(change)}</dd>
-          </div>
+          {paymentMethod === "transfer" ? (
+            <div className="col-span-2 flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink">
+              <dt className="text-[14px]">ชำระโดย</dt>
+              <dd className="text-[28px] font-bold">เงินโอน</dd>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col gap-0.5 rounded-[18px] bg-card px-[18px] py-3.5">
+                <dt className="text-[14px] text-ink-2">รับเงินสด</dt>
+                <dd className="text-[28px] font-bold">{formatBaht(cashReceived)}</dd>
+              </div>
+              <div className="flex flex-col gap-0.5 rounded-[18px] bg-ok-soft px-[18px] py-3.5 text-ok-ink">
+                <dt className="text-[14px]">เงินทอน</dt>
+                <dd className="text-[28px] font-bold">{formatBaht(change)}</dd>
+              </div>
+            </>
+          )}
         </dl>
 
         <div className="flex flex-wrap gap-3">

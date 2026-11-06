@@ -49,6 +49,11 @@ describe("parseProductDraft", () => {
     expect(parseProductDraft({ ...valid, price: "1" }).ok).toBe(true);
   });
 
+  it("rejects a unit that is only a number, which would read as a second quantity", () => {
+    expect(parseProductDraft({ ...valid, unit: "1" })).toEqual({ ok: false, errors: { unit: "หน่วยต้องเป็นคำ เช่น แก้ว ไม้ ห่อ" } });
+    expect(parseProductDraft({ ...valid, unit: "500 ml" }).ok).toBe(true);
+  });
+
   it("limits unit to 12 characters", () => {
     expect(parseProductDraft({ ...valid, unit: "" })).toEqual({ ok: false, errors: { unit: "กรุณาใส่หน่วย" } });
     expect(parseProductDraft({ ...valid, unit: "ก".repeat(13) })).toEqual({

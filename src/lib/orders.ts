@@ -54,6 +54,7 @@ export async function createOrder(db: Firestore, orderId: OrderId, sale: Sale, n
       businessDate: date,
       lines: sale.lines,
       total: sale.total,
+      paymentMethod: sale.paymentMethod,
       cashReceived: sale.cashReceived,
       change: sale.change,
       status: "preparing",
@@ -175,6 +176,8 @@ function parseReceipt(data: DocumentData) {
     businessDate: data.businessDate as BusinessDate,
     lines: (data.lines as OrderLine[]).map((l) => ({ ...l, price: baht(l.price) })),
     total: baht(data.total),
+    // Orders saved before transfers existed carry no method; they were all cash.
+    paymentMethod: data.paymentMethod === "transfer" ? ("transfer" as const) : ("cash" as const),
     cashReceived: baht(data.cashReceived),
     change: baht(data.change),
     createdAt: toDate(data.createdAt) ?? new Date(),
